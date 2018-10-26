@@ -9,49 +9,49 @@ namespace LibraryManager.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class ReviewsController : ControllerBase
     {
-        private readonly Repository<User> _usersRepository;
+        private readonly Repository<Review> _reviewsRepository;
 
-        public UsersController() : base() 
+        public ReviewsController() : base() 
         {
-            _usersRepository = new Repository<User>();
+            _reviewsRepository = new Repository<Review>();
         }
 
         [HttpGet]
-        public IActionResult Get() => Ok(_usersRepository.GetAll());
+        public IActionResult Get() => Ok(_reviewsRepository.GetAll());
 
         [HttpGet("{id}")]
         public IActionResult Get(int id) 
         {
             try 
             {
-                return Ok(_usersRepository.Get(id));
+                return Ok(_reviewsRepository.Get(id));
             }
-            catch (EntityNotFoundException<User> ex)
+            catch (EntityNotFoundException<Review> ex)
             {
                 return NotFound(ex.Message);
             }
         } 
 
         [HttpPost]
-        public IActionResult Post([FromBody] User user)
+        public IActionResult Post([FromBody] Review Review)
         {
             var uriBuilder = new UriBuilder()
             {
                 Host = this.HttpContext.Request.Host.Host
             };
-            return Created(uriBuilder.Uri, _usersRepository.Insert(user));
+            return Created(uriBuilder.Uri, _reviewsRepository.Insert(Review));
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] User user)
+        public IActionResult Put(int id, [FromBody] Review Review)
         {
             try 
             {
-                return Ok(_usersRepository.Update(id, user));
+                return Ok(_reviewsRepository.Update(id, Review));
             }
-            catch(EntityNotFoundException<User> ex)
+            catch(EntityNotFoundException<Review> ex)
             {
                 return NotFound(ex.Message);
             }
@@ -62,10 +62,10 @@ namespace LibraryManager.Controllers
         {
             try 
             {
-                _usersRepository.Delete(id);
+                _reviewsRepository.Delete(id);
                 return Ok();
             }
-            catch (EntityNotFoundException<User> ex)
+            catch (EntityNotFoundException<Review> ex)
             {
                 return NotFound(ex.Message);
             }

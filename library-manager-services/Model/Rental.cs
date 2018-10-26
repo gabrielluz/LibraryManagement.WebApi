@@ -1,10 +1,13 @@
 using System;
+using Dapper.Contrib.Extensions;
 
 namespace LibraryManager.Models
 {
-    public class Rental
+    [Table("Rental")]
+    public class Rental : IEntity
     {
-        public int Id { get; set; }
+        [Key]
+        public long Id { get; set; }
         public DateTime Issued { get; set; }
         public DateTime Returned { get; set; }
         public User User { get; set; }

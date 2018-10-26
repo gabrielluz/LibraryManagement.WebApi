@@ -9,49 +9,49 @@ namespace LibraryManager.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class RentalsController : ControllerBase
     {
-        private readonly Repository<User> _usersRepository;
+        private readonly Repository<Rental> _rentalsRepository;
 
-        public UsersController() : base() 
+        public RentalsController() : base() 
         {
-            _usersRepository = new Repository<User>();
+            _rentalsRepository = new Repository<Rental>();
         }
 
         [HttpGet]
-        public IActionResult Get() => Ok(_usersRepository.GetAll());
+        public IActionResult Get() => Ok(_rentalsRepository.GetAll());
 
         [HttpGet("{id}")]
         public IActionResult Get(int id) 
         {
             try 
             {
-                return Ok(_usersRepository.Get(id));
+                return Ok(_rentalsRepository.Get(id));
             }
-            catch (EntityNotFoundException<User> ex)
+            catch (EntityNotFoundException<Rental> ex)
             {
                 return NotFound(ex.Message);
             }
         } 
 
         [HttpPost]
-        public IActionResult Post([FromBody] User user)
+        public IActionResult Post([FromBody] Rental Rental)
         {
             var uriBuilder = new UriBuilder()
             {
                 Host = this.HttpContext.Request.Host.Host
             };
-            return Created(uriBuilder.Uri, _usersRepository.Insert(user));
+            return Created(uriBuilder.Uri, _rentalsRepository.Insert(Rental));
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] User user)
+        public IActionResult Put(int id, [FromBody] Rental Rental)
         {
             try 
             {
-                return Ok(_usersRepository.Update(id, user));
+                return Ok(_rentalsRepository.Update(id, Rental));
             }
-            catch(EntityNotFoundException<User> ex)
+            catch(EntityNotFoundException<Rental> ex)
             {
                 return NotFound(ex.Message);
             }
@@ -62,10 +62,10 @@ namespace LibraryManager.Controllers
         {
             try 
             {
-                _usersRepository.Delete(id);
+                _rentalsRepository.Delete(id);
                 return Ok();
             }
-            catch (EntityNotFoundException<User> ex)
+            catch (EntityNotFoundException<Rental> ex)
             {
                 return NotFound(ex.Message);
             }

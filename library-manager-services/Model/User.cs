@@ -1,8 +1,12 @@
+using Dapper.Contrib.Extensions;
+
 namespace LibraryManager.Models
 {
-    public class User
+    [Table("User")]
+    public class User : IEntity
     {
-        public int Id { get; set; }
+        [Key]
+        public long Id { get; set; }
         public string Email { get; set; }
         public string SecretKey { get; set; }
         public string FirstName { get; set; }
