@@ -1,6 +1,6 @@
 using Dapper.Contrib.Extensions;
 
-namespace LibraryManager.Models
+namespace LibraryManager.Models.Entities
 {
     [Table("Review")]
     public class Review : IEntity
@@ -10,6 +10,6 @@ namespace LibraryManager.Models
         public string Comment { get; set; }
         public int Rate { get; set; }
         public User User { get; set; }
-        public Book Book { get; set; } 
+        public Book Book { get; set; }
     }
 }

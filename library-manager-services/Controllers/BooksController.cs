@@ -1,32 +1,30 @@
 using System;
 using System.Collections.Generic;
 using LibraryManager.Exceptions;
-using LibraryManager.Models;
+using LibraryManager.Models.Entities;
 using LibraryManager.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManager.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class BooksController : ControllerBase
+    public class BooksController : ApiController
     {
-        private readonly Repository<Book> _booksRepository;
+        private readonly ICrudRepository _crudRepository;
 
-        public BooksController() : base() 
+        public BooksController(ICrudRepository crudRepository) : base() 
         {
-            _booksRepository = new Repository<Book>();
+            _crudRepository = crudRepository;
         }
 
         [HttpGet]
-        public IActionResult Get() => Ok(_booksRepository.GetAll());
+        public IActionResult Get() => Ok(_crudRepository.GetAll<Book>());
 
         [HttpGet("{id}")]
         public IActionResult Get(int id) 
         {
             try 
             {
-                return Ok(_booksRepository.Get(id));
+                return Ok(_crudRepository.Get<Book>(id));
             }
             catch (EntityNotFoundException<Book> ex)
             {
@@ -41,7 +39,7 @@ namespace LibraryManager.Controllers
             {
                 Host = this.HttpContext.Request.Host.Host
             };
-            return Created(uriBuilder.Uri, _booksRepository.Insert(Book));
+            return Created(uriBuilder.Uri, _crudRepository.Insert(Book));
         }
 
         [HttpPut("{id}")]
@@ -49,7 +47,7 @@ namespace LibraryManager.Controllers
         {
             try 
             {
-                return Ok(_booksRepository.Update(id, Book));
+                return Ok(_crudRepository.Update(id, Book));
             }
             catch(EntityNotFoundException<Book> ex)
             {
@@ -62,7 +60,7 @@ namespace LibraryManager.Controllers
         {
             try 
             {
-                _booksRepository.Delete(id);
+                _crudRepository.Delete<Book>(id);
                 return Ok();
             }
             catch (EntityNotFoundException<Book> ex)

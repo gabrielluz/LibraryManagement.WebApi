@@ -1,32 +1,30 @@
 using System;
 using System.Collections.Generic;
 using LibraryManager.Exceptions;
-using LibraryManager.Models;
+using LibraryManager.Models.Entities;
 using LibraryManager.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManager.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class RentalsController : ControllerBase
+    public class RentalsController : ApiController
     {
-        private readonly Repository<Rental> _rentalsRepository;
+        private readonly ICrudRepository _crudRepository;
 
-        public RentalsController() : base() 
+        public RentalsController(ICrudRepository crudRepository) : base() 
         {
-            _rentalsRepository = new Repository<Rental>();
+            _crudRepository = crudRepository;
         }
 
         [HttpGet]
-        public IActionResult Get() => Ok(_rentalsRepository.GetAll());
+        public IActionResult Get() => Ok(_crudRepository.GetAll<Rental>());
 
         [HttpGet("{id}")]
         public IActionResult Get(int id) 
         {
             try 
             {
-                return Ok(_rentalsRepository.Get(id));
+                return Ok(_crudRepository.Get<Rental>(id));
             }
             catch (EntityNotFoundException<Rental> ex)
             {
@@ -41,7 +39,7 @@ namespace LibraryManager.Controllers
             {
                 Host = this.HttpContext.Request.Host.Host
             };
-            return Created(uriBuilder.Uri, _rentalsRepository.Insert(Rental));
+            return Created(uriBuilder.Uri, _crudRepository.Insert(Rental));
         }
 
         [HttpPut("{id}")]
@@ -49,7 +47,7 @@ namespace LibraryManager.Controllers
         {
             try 
             {
-                return Ok(_rentalsRepository.Update(id, Rental));
+                return Ok(_crudRepository.Update(id, Rental));
             }
             catch(EntityNotFoundException<Rental> ex)
             {
@@ -62,7 +60,7 @@ namespace LibraryManager.Controllers
         {
             try 
             {
-                _rentalsRepository.Delete(id);
+                _crudRepository.Delete<Rental>(id);
                 return Ok();
             }
             catch (EntityNotFoundException<Rental> ex)

@@ -1,21 +1,19 @@
 using System;
 using System.Collections.Generic;
 using LibraryManager.Exceptions;
-using LibraryManager.Models;
+using LibraryManager.Models.Entities;
 using LibraryManager.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManager.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ReviewsController : ControllerBase
+    public class ReviewsController : ApiController
     {
-        private readonly Repository<Review> _reviewsRepository;
+        private readonly IReviewRepository _reviewsRepository;
 
-        public ReviewsController() : base() 
+        public ReviewsController(IReviewRepository reviewRepository) : base() 
         {
-            _reviewsRepository = new Repository<Review>();
+            _reviewsRepository = reviewRepository;
         }
 
         [HttpGet]
@@ -35,25 +33,29 @@ namespace LibraryManager.Controllers
         } 
 
         [HttpPost]
-        public IActionResult Post([FromBody] Review Review)
+        public IActionResult Post([FromBody] Review review)
         {
             var uriBuilder = new UriBuilder()
             {
                 Host = this.HttpContext.Request.Host.Host
             };
-            return Created(uriBuilder.Uri, _reviewsRepository.Insert(Review));
+            return Created(uriBuilder.Uri, _reviewsRepository.Insert(review));
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Review Review)
+        public IActionResult Put(int id, [FromBody] Review review)
         {
             try 
             {
-                return Ok(_reviewsRepository.Update(id, Review));
+                return Ok(_reviewsRepository.Update(id, review));
             }
             catch(EntityNotFoundException<Review> ex)
             {
-                return NotFound(ex.Message);
+                return NotFound(new { Message = ex.Message });
+            }
+            catch(ArgumentNullException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
             }
         }
 

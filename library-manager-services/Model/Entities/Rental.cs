@@ -1,7 +1,7 @@
 using System;
 using Dapper.Contrib.Extensions;
 
-namespace LibraryManager.Models
+namespace LibraryManager.Models.Entities
 {
     [Table("Rental")]
     public class Rental : IEntity

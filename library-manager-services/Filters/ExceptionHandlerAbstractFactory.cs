@@ -1,6 +1,6 @@
 using System;
 using LibraryManager.Exceptions;
-using LibraryManager.Models;
+using LibraryManager.Models.Entities;
 
 namespace LibraryManager.Filters
 {

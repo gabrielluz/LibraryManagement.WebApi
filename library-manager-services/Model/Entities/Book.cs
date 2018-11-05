@@ -1,6 +1,6 @@
 using Dapper.Contrib.Extensions;
 
-namespace LibraryManager.Models
+namespace LibraryManager.Models.Entities
 {
     [Table("Book")]
     public class Book : IEntity

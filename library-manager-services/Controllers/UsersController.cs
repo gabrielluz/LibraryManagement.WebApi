@@ -1,32 +1,30 @@
 using System;
 using System.Collections.Generic;
 using LibraryManager.Exceptions;
-using LibraryManager.Models;
+using LibraryManager.Models.Entities;
 using LibraryManager.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManager.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersController : ApiController
     {
-        private readonly Repository<User> _usersRepository;
+        private readonly ICrudRepository _crudRepository;
 
-        public UsersController() : base() 
+        public UsersController(ICrudRepository crudRepository) : base() 
         {
-            _usersRepository = new Repository<User>();
+            _crudRepository = crudRepository;
         }
 
         [HttpGet]
-        public IActionResult Get() => Ok(_usersRepository.GetAll());
+        public IActionResult Get() => Ok(_crudRepository.GetAll<User>());
 
         [HttpGet("{id}")]
-        public IActionResult Get(int id) 
+        public IActionResult Get(long id) 
         {
             try 
             {
-                return Ok(_usersRepository.Get(id));
+                return Ok(_crudRepository.Get<User>(id));
             }
             catch (EntityNotFoundException<User> ex)
             {
@@ -41,15 +39,15 @@ namespace LibraryManager.Controllers
             {
                 Host = this.HttpContext.Request.Host.Host
             };
-            return Created(uriBuilder.Uri, _usersRepository.Insert(user));
+            return Created(uriBuilder.Uri, _crudRepository.Insert(user));
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] User user)
+        public IActionResult Put(long id, [FromBody] User user)
         {
             try 
             {
-                return Ok(_usersRepository.Update(id, user));
+                return Ok(_crudRepository.Update(id, user));
             }
             catch(EntityNotFoundException<User> ex)
             {
@@ -58,11 +56,11 @@ namespace LibraryManager.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(long id)
         {
             try 
             {
-                _usersRepository.Delete(id);
+                _crudRepository.Delete<User>(id);
                 return Ok();
             }
             catch (EntityNotFoundException<User> ex)

@@ -1,4 +1,4 @@
-namespace LibraryManager.Models
+namespace LibraryManager.Models.Entities
 {
     public interface IEntity 
     {
