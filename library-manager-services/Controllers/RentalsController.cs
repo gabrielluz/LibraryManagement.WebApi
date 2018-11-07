@@ -28,7 +28,7 @@ namespace LibraryManager.Controllers
             }
             catch (EntityNotFoundException<Rental> ex)
             {
-                return NotFound(ex.Message);
+                return NotFound(new { ex.Message });
             }
         } 
 
@@ -51,7 +51,7 @@ namespace LibraryManager.Controllers
             }
             catch(EntityNotFoundException<Rental> ex)
             {
-                return NotFound(ex.Message);
+                return NotFound(new { ex.Message });
             }
         }
 
@@ -65,7 +65,7 @@ namespace LibraryManager.Controllers
             }
             catch (EntityNotFoundException<Rental> ex)
             {
-                return NotFound(ex.Message);
+                return NotFound(new { ex.Message });
             }
         }
     }

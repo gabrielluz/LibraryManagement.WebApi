@@ -70,7 +70,7 @@ namespace LibraryManager.Controllers
             }
             catch (EntityNotFoundException<Review> ex)
             {
-                return NotFound(ex.Message);
+                return NotFound(new { ex.Message });
             }
         }
     }
