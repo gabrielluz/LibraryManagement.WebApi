@@ -20,5 +20,6 @@ namespace LibraryManager.Models.Dto
         public DateTime Issued { get; set; }
         
         public DateTime Returned { get; set; }
+        public string Comment { get; set; }
     }
 }

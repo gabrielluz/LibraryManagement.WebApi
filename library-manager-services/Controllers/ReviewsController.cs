@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using LibraryManager.Exceptions;
+using LibraryManager.Models.Dto;
 using LibraryManager.Models.Entities;
 using LibraryManager.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -33,7 +34,7 @@ namespace LibraryManager.Controllers
         } 
 
         [HttpPost]
-        public IActionResult Post([FromBody] Review review)
+        public IActionResult Post([FromBody] ReviewDto review)
         {
             var uriBuilder = new UriBuilder()
             {
@@ -43,7 +44,7 @@ namespace LibraryManager.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Review review)
+        public IActionResult Put(int id, [FromBody] ReviewDto review)
         {
             try 
             {

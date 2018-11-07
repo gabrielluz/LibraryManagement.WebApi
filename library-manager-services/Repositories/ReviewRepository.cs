@@ -26,56 +26,54 @@ namespace LibraryManager.Repositories
             _databaseProvider = databaseProvider;
         }
 
-        public Review Insert(Review review)
+        public Review Insert(ReviewDto reviewDto)
         {
+            if (reviewDto == null)
+                throw new ArgumentNullException("Review must be not null.");
+
             var sql = "INSERT INTO Review(Comment, Rate, UserId, BookId) "
                     + "VALUES (@Comment, @Rate, @UserId, @BookId);";
             
-            var user = _crudRepository.Get<User>(review.User.Id);
-            var book = _crudRepository.Get<Book>(review.Book.Id);
+            var user = _crudRepository.Get<User>(reviewDto.UserId);
+            var book = _crudRepository.Get<Book>(reviewDto.BookId);
             var connection = _databaseProvider.GetConnection();
             
             connection.Execute(sql, new {
-                Comment = review.Comment,
-                Rate = review.Rate,
+                Comment = reviewDto.Comment,
+                Rate = reviewDto.Rate,
                 UserId = user.Id,
                 BookId = book.Id
             });
-            review.Book = book;
-            review.User = user;
-            return review;
+            return Get(reviewDto.Id);
         }
 
-        public Review Update(int id, Review review) 
+        public Review Update(long id, ReviewDto reviewDto) 
         {
-            var connection = _databaseProvider.GetConnection();
-            var user = _crudRepository.Get<User>(review.User?.Id);
-            var book = _crudRepository.Get<Book>(review.Book?.Id);
-            var sql = "UPDATE Review SET Comment = @Comment, Rate = @Rate "
-                    + "WHERE Id = @Id;";
-
-            connection.Execute(sql, new { 
-                Comment = review.Comment,
-                Rate = review.Rate,
+            IDbConnection connection = _databaseProvider.GetConnection();
+            User user = _crudRepository.Get<User>(reviewDto.UserId);
+            Book book = _crudRepository.Get<Book>(reviewDto.BookId);
+            string sql = "UPDATE Review SET Comment = @Comment, Rate = @Rate WHERE Id = @Id;";
+            int amountOfRecordsAffected = connection.Execute(sql, new {
+                Comment = reviewDto.Comment,
+                Rate = reviewDto.Rate,
                 Id = id
             });
-            review.User = user;
-            review.Book = book;
-            review.Id = id;
-            return review;
+            return Get(reviewDto.Id);
         }
 
         public IEnumerable<Review> GetAll() 
         {
             try
             {
-                var sql = @"SELECT 
+                string sql = @"SELECT 
                             r.Id, r.Rate, r.Comment, b.*, u.* 
                             FROM Review r 
                             INNER JOIN Book b ON r.BookId = b.Id
                             INNER JOIN User u ON r.UserId = u.Id;";
+                
                 var reader = _databaseProvider.GetConnection().ExecuteReader(sql);
                 var reviews = new Collection<Review>();
+                
                 while (reader.Read())
                     reviews.Add(ReadReviewFromDatabase(reader));
 
@@ -87,22 +85,22 @@ namespace LibraryManager.Repositories
             }
         }
 
-        public Review Get(int id) 
+        public Review Get(long id) 
         {
             try 
             {
-                var sql = @"SELECT 
+                string sql = @"SELECT 
                             r.Id, r.Rate, r.Comment, b.*, u.* 
                             FROM Review r 
                             INNER JOIN Book b ON r.BookId = b.Id
                             INNER JOIN User u ON r.UserId = u.Id
                             Where r.Id = @Id;";
                 var reader = _databaseProvider.GetConnection().ExecuteReader(sql, new { Id = id });
+                
                 if (!reader.Read())
                     throw new EntityNotFoundException<Review>(id);
 
-                var review = ReadReviewFromDatabase(reader);
-                return review;
+                return ReadReviewFromDatabase(reader);
             }
             catch (SqlException ex)
             {
@@ -110,13 +108,13 @@ namespace LibraryManager.Repositories
             }
         } 
 
-        public void Delete(int id) => _crudRepository.Delete<Review>(id);
+        public void Delete(long id) => _crudRepository.Delete<Review>(id);
 
         private Review ReadReviewFromDatabase(IDataReader reader)
         {
             var user = ReadUserFromDatabase(reader);
             var book = ReadBookFromDatabase(reader);
-            var review = new Review
+            return new Review
             {
                 Id = reader.GetInt64(0),
                 Rate = reader.GetInt16(1),
@@ -124,7 +122,6 @@ namespace LibraryManager.Repositories
                 User = ReadUserFromDatabase(reader),
                 Book = ReadBookFromDatabase(reader)
             };
-            return review;
         }
 
         private Book ReadBookFromDatabase(IDataReader reader)
