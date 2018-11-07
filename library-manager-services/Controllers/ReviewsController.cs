@@ -29,18 +29,29 @@ namespace LibraryManager.Controllers
             }
             catch (EntityNotFoundException<Review> ex)
             {
-                return NotFound(ex.Message);
+                return NotFound(new { ex.Message });
             }
         } 
 
         [HttpPost]
         public IActionResult Post([FromBody] ReviewDto review)
         {
-            var uriBuilder = new UriBuilder()
+            try 
             {
-                Host = this.HttpContext.Request.Host.Host
-            };
-            return Created(uriBuilder.Uri, _reviewsRepository.Insert(review));
+                var uriBuilder = new UriBuilder()
+                {
+                    Host = this.HttpContext.Request.Host.Host
+                };
+                return Created(uriBuilder.Uri, _reviewsRepository.Insert(review));
+            }
+            catch (EntityNotFoundException<User> ex)
+            {
+                return NotFound(new { Message = ex.Message });
+            }
+            catch (EntityNotFoundException<Book> ex)
+            {
+                return NotFound(new { Message = ex.Message });
+            }
         }
 
         [HttpPut("{id}")]

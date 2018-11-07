@@ -10,6 +10,7 @@ using LibraryManager.Exceptions;
 using LibraryManager.Models.Dto;
 using LibraryManager.Models.Entities;
 using Microsoft.Extensions.Configuration;
+using MySql.Data.MySqlClient;
 
 namespace LibraryManager.Repositories
 {
@@ -31,29 +32,34 @@ namespace LibraryManager.Repositories
             if (reviewDto == null)
                 throw new ArgumentNullException("Review must be not null.");
 
-            var sql = "INSERT INTO Review(Comment, Rate, UserId, BookId) "
-                    + "VALUES (@Comment, @Rate, @UserId, @BookId);";
-            
             var user = _crudRepository.Get<User>(reviewDto.UserId);
             var book = _crudRepository.Get<Book>(reviewDto.BookId);
-            var connection = _databaseProvider.GetConnection();
-            
-            connection.Execute(sql, new {
+            var sqlCommand = "INSERT INTO Review(Comment, Rate, UserId, BookId) "
+                + "VALUES (@Comment, @Rate, @UserId, @BookId);"
+                + "SELECT LAST_INSERT_ID();";
+            var sqlParams = new 
+            {
                 Comment = reviewDto.Comment,
                 Rate = reviewDto.Rate,
                 UserId = user.Id,
                 BookId = book.Id
-            });
-            return Get(reviewDto.Id);
+            };
+            var connection = _databaseProvider.GetConnection();
+            int insertedId = 0;
+            using (var reader = connection.ExecuteReader(sqlCommand, sqlParams))
+            {
+                if (reader.Read())
+                    insertedId = reader.GetInt32(0);
+            }
+            return Get(insertedId);
         }
 
         public Review Update(long id, ReviewDto reviewDto) 
         {
-            IDbConnection connection = _databaseProvider.GetConnection();
             User user = _crudRepository.Get<User>(reviewDto.UserId);
             Book book = _crudRepository.Get<Book>(reviewDto.BookId);
             string sql = "UPDATE Review SET Comment = @Comment, Rate = @Rate WHERE Id = @Id;";
-            int amountOfRecordsAffected = connection.Execute(sql, new {
+            int amountOfRecordsAffected = _databaseProvider.GetConnection().Execute(sql, new {
                 Comment = reviewDto.Comment,
                 Rate = reviewDto.Rate,
                 Id = id
@@ -112,8 +118,8 @@ namespace LibraryManager.Repositories
 
         private Review ReadReviewFromDatabase(IDataReader reader)
         {
-            var user = ReadUserFromDatabase(reader);
-            var book = ReadBookFromDatabase(reader);
+            User user = ReadUserFromDatabase(reader);
+            Book book = ReadBookFromDatabase(reader);
             return new Review
             {
                 Id = reader.GetInt64(0),
