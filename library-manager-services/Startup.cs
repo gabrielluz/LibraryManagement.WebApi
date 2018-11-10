@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LibraryManager.Middleware;
 using LibraryManager.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -40,6 +41,7 @@ namespace CSG_Library_Management
             app.UseHsts();
             app.UseHttpsRedirection();
             app.UseMvc();
+            app.UseMiddleware<ExceptionMiddeware>();
         }
     }
 }

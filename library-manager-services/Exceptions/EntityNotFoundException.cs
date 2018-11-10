@@ -5,8 +5,8 @@ namespace LibraryManager.Exceptions
 {
     public class EntityNotFoundException<T> : Exception where T : class, IEntity
     {
-        public EntityNotFoundException(long id) 
-            : base($"{ typeof(T).Name } with id { id } not found.")
+        public EntityNotFoundException(string name, long id) 
+            : base($"{ name } with id { id } not found.")
         {
         }
     }

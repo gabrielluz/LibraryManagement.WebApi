@@ -33,7 +33,7 @@ namespace LibraryManager.Repositories
             var entity = _databaseConnection.Get<T>(id);
 
             if (entity == null)
-                throw new EntityNotFoundException<T>(id.Value);
+                throw new EntityNotFoundException<T>(nameof(T), id.Value);
                 
             return entity;
         }
@@ -50,7 +50,7 @@ namespace LibraryManager.Repositories
                 throw new ArgumentNullException("id");
 
             if (!_databaseConnection.Update<T>(entity))
-                throw new EntityNotFoundException<T>(id.Value);
+                throw new EntityNotFoundException<T>(nameof(T), id.Value);
             
             entity.Id = id.Value;
             return entity;
@@ -64,7 +64,7 @@ namespace LibraryManager.Repositories
             var entity = _databaseConnection.Get<T>(id);
 
             if (entity == null)
-                throw new EntityNotFoundException<T>(id.Value);
+                throw new EntityNotFoundException<T>(nameof(T), id.Value);
             
             _databaseConnection.Delete(entity);
         }
