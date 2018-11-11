@@ -23,66 +23,26 @@ namespace LibraryManager.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(int id) 
         {
-            try 
-            {
-                return Ok(_reviewsRepository.Get(id));
-            }
-            catch (EntityNotFoundException<Review> ex)
-            {
-                return NotFound(new { ex.Message });
-            }
+            return Ok(_reviewsRepository.Get(id));
         } 
 
         [HttpPost]
         public IActionResult Post([FromBody] ReviewDto review)
         {
-            try 
-            {
-                var uriBuilder = new UriBuilder()
-                {
-                    Host = this.HttpContext.Request.Host.Host
-                };
-                return Created(uriBuilder.Uri, _reviewsRepository.Insert(review));
-            }
-            catch (EntityNotFoundException<User> ex)
-            {
-                return NotFound(new { Message = ex.Message });
-            }
-            catch (EntityNotFoundException<Book> ex)
-            {
-                return NotFound(new { Message = ex.Message });
-            }
+            return StatusCode(201, _reviewsRepository.Insert(review));
         }
 
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] ReviewDto review)
         {
-            try 
-            {
-                return Ok(_reviewsRepository.Update(id, review));
-            }
-            catch(EntityNotFoundException<Review> ex)
-            {
-                return NotFound(new { Message = ex.Message });
-            }
-            catch(ArgumentNullException ex)
-            {
-                return BadRequest(new { Message = ex.Message });
-            }
+            return Ok(_reviewsRepository.Update(id, review));
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            try 
-            {
-                _reviewsRepository.Delete(id);
-                return Ok();
-            }
-            catch (EntityNotFoundException<Review> ex)
-            {
-                return NotFound(new { ex.Message });
-            }
+            _reviewsRepository.Delete(id);
+            return Ok();
         }
     }
 }

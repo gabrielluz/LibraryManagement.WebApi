@@ -22,51 +22,26 @@ namespace LibraryManager.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(int id) 
         {
-            try 
-            {
-                return Ok(_crudRepository.Get<Book>(id));
-            }
-            catch (EntityNotFoundException<Book> ex)
-            {
-                return NotFound(new { ex.Message });
-            }
+            return Ok(_crudRepository.Get<Book>(id));
         } 
 
         [HttpPost]
         public IActionResult Post([FromBody] Book Book)
         {
-            var uriBuilder = new UriBuilder()
-            {
-                Host = this.HttpContext.Request.Host.Host
-            };
-            return Created(uriBuilder.Uri, _crudRepository.Insert(Book));
+            return StatusCode(201 , _crudRepository.Insert(Book));
         }
 
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] Book Book)
         {
-            try 
-            {
-                return Ok(_crudRepository.Update(id, Book));
-            }
-            catch(EntityNotFoundException<Book> ex)
-            {
-                return NotFound(new { ex.Message });
-            }
+            return Ok(_crudRepository.Update(id, Book));
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            try 
-            {
-                _crudRepository.Delete<Book>(id);
-                return Ok();
-            }
-            catch (EntityNotFoundException<Book> ex)
-            {
-                return NotFound(new { ex.Message });
-            }
+            _crudRepository.Delete<Book>(id);
+            return Ok();
         }
     }
 }

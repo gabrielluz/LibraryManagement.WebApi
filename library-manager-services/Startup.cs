@@ -38,10 +38,10 @@ namespace CSG_Library_Management
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseMiddleware<ExceptionMiddeware>();
             app.UseHsts();
             app.UseHttpsRedirection();
             app.UseMvc();
-            app.UseMiddleware<ExceptionMiddeware>();
         }
     }
 }

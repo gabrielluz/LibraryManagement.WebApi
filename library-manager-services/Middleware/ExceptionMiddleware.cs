@@ -5,6 +5,7 @@ using LibraryManager.Models.Dto;
 using LibraryManager.Models.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace LibraryManager.Middleware
 {
@@ -31,9 +32,10 @@ namespace LibraryManager.Middleware
 
         private Task HandleExceptionAsync(HttpContext context, Exception ex)
         {
+            context.Response.ContentType = "application/json";
             switch (ex)
             {
-                case EntityNotFoundException<IEntity> notFoundException:
+                case EntityNotFoundException notFoundException:
                     return HandleNotFound(context, notFoundException);
                 case ArgumentException argumentException:
                     return HandleArgumentException(context, argumentException);
@@ -41,37 +43,33 @@ namespace LibraryManager.Middleware
             return HandleException(context);
         }
 
-        private static Task HandleException(HttpContext context)
+        private Task HandleException(HttpContext context)
         {
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             return context
                 .Response
-                .WriteAsync(new ErrorDetails
-                {
-                    Status = StatusCodes.Status500InternalServerError,
-                    Message = "Internal server error."
-                }.ToString());
+                .WriteAsync(SerializeErrorMessage("Internal server error."));                
         }
 
-        private static Task HandleArgumentException(HttpContext context, ArgumentException argumentException)
+        private Task HandleArgumentException(HttpContext context, ArgumentException ex)
         {
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
             return context
                 .Response
-                .WriteAsync(new ErrorDetails
-                {
-                    Status = StatusCodes.Status400BadRequest,
-                    Message = argumentException.Message
-                }.ToString());
+                .WriteAsync(SerializeErrorMessage(ex.Message));                
         }
 
-        private static Task HandleNotFound(HttpContext context, EntityNotFoundException<IEntity> notFoundException)
+        private Task HandleNotFound(HttpContext context, EntityNotFoundException ex)
         {
+            context.Response.StatusCode = StatusCodes.Status404NotFound;
             return context
                 .Response
-                .WriteAsync(new ErrorDetails
-                {
-                    Status = StatusCodes.Status404NotFound,
-                    Message = notFoundException.Message
-                }.ToString());
+                .WriteAsync(SerializeErrorMessage(ex.Message));
+        }
+
+        private string SerializeErrorMessage(string message)
+        {
+            return JsonConvert.SerializeObject(new { message });
         }
     }
 }

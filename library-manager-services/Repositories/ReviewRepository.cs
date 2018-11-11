@@ -104,7 +104,7 @@ namespace LibraryManager.Repositories
                 var reader = _databaseProvider.GetConnection().ExecuteReader(sql, new { Id = id });
                 
                 if (!reader.Read())
-                    throw new EntityNotFoundException<Review>(nameof(Review), id);
+                    throw new EntityNotFoundException(nameof(Review), id);
 
                 return ReadReviewFromDatabase(reader);
             }

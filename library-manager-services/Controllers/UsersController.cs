@@ -22,14 +22,7 @@ namespace LibraryManager.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(long id) 
         {
-            try 
-            {
-                return Ok(_crudRepository.Get<User>(id));
-            }
-            catch (EntityNotFoundException<User> ex)
-            {
-                return NotFound(new { ex.Message });
-            }
+            return Ok(_crudRepository.Get<User>(id));
         } 
 
         [HttpPost]
@@ -45,28 +38,14 @@ namespace LibraryManager.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(long id, [FromBody] User user)
         {
-            try 
-            {
-                return Ok(_crudRepository.Update(id, user));
-            }
-            catch(EntityNotFoundException<User> ex)
-            {
-                return NotFound(new { ex.Message });
-            }
+            return Ok(_crudRepository.Update(id, user));
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(long id)
         {
-            try 
-            {
-                _crudRepository.Delete<User>(id);
-                return Ok();
-            }
-            catch (EntityNotFoundException<User> ex)
-            {
-                return NotFound(new { ex.Message });
-            }
+            _crudRepository.Delete<User>(id);
+            return Ok();
         }
     }
 }

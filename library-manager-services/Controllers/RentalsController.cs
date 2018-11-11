@@ -27,7 +27,7 @@ namespace LibraryManager.Controllers
             {
                 return Ok(_rentalRepository.Get(id));
             }
-            catch (EntityNotFoundException<Rental> ex)
+            catch (EntityNotFoundException ex)
             {
                 return NotFound(new { ex.Message });
             }
@@ -50,7 +50,7 @@ namespace LibraryManager.Controllers
             {
                 return Ok(_rentalRepository.Update(id, Rental));
             }
-            catch(EntityNotFoundException<Rental> ex)
+            catch(EntityNotFoundException ex)
             {
                 return NotFound(new { ex.Message });
             }
@@ -64,7 +64,7 @@ namespace LibraryManager.Controllers
                 _rentalRepository.Delete(id);
                 return Ok();
             }
-            catch (EntityNotFoundException<Rental> ex)
+            catch (EntityNotFoundException ex)
             {
                 return NotFound(new { ex.Message });
             }
