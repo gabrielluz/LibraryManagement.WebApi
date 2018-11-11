@@ -41,7 +41,7 @@ namespace LibraryManager.Controllers
         public IActionResult Delete(long id)
         {
             _crudRepository.Delete<User>(id);
-            return Ok();
+            return NoContent();
         }
     }
 }

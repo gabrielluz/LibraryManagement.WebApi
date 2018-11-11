@@ -42,7 +42,7 @@ namespace LibraryManager.Controllers
         public IActionResult Delete(int id)
         {
             _rentalRepository.Delete(id);
-            return Ok();
+            return NoContent();
         }
     }
 }

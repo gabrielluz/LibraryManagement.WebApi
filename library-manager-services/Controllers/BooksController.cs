@@ -41,7 +41,7 @@ namespace LibraryManager.Controllers
         public IActionResult Delete(int id)
         {
             _crudRepository.Delete<Book>(id);
-            return Ok();
+            return NoContent();
         }
     }
 }
