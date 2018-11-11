@@ -28,11 +28,7 @@ namespace LibraryManager.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] User user)
         {
-            var uriBuilder = new UriBuilder()
-            {
-                Host = this.HttpContext.Request.Host.Host
-            };
-            return Created(uriBuilder.Uri, _crudRepository.Insert(user));
+            return StatusCode(201, _crudRepository.Insert(user));
         }
 
         [HttpPut("{id}")]

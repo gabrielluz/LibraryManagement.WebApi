@@ -23,51 +23,26 @@ namespace LibraryManager.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(int id) 
         {
-            try 
-            {
-                return Ok(_rentalRepository.Get(id));
-            }
-            catch (EntityNotFoundException ex)
-            {
-                return NotFound(new { ex.Message });
-            }
+            return Ok(_rentalRepository.Get(id));
         } 
 
         [HttpPost]
         public IActionResult Post([FromBody] RentalDto Rental)
         {
-            var uriBuilder = new UriBuilder()
-            {
-                Host = this.HttpContext.Request.Host.Host
-            };
-            return Created(uriBuilder.Uri, _rentalRepository.Insert(Rental));
+            return StatusCode(201, _rentalRepository.Insert(Rental));
         }
 
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] RentalDto Rental)
         {
-            try 
-            {
-                return Ok(_rentalRepository.Update(id, Rental));
-            }
-            catch(EntityNotFoundException ex)
-            {
-                return NotFound(new { ex.Message });
-            }
+            return Ok(_rentalRepository.Update(id, Rental));
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            try 
-            {
-                _rentalRepository.Delete(id);
-                return Ok();
-            }
-            catch (EntityNotFoundException ex)
-            {
-                return NotFound(new { ex.Message });
-            }
+            _rentalRepository.Delete(id);
+            return Ok();
         }
     }
 }
