@@ -13,11 +13,11 @@ namespace LibraryManager.Filters
             if (context.ModelState.IsValid)
                 return;
 
-            var errors = CreateErrorListFromModelState(context);
+            var errors = CreateErrorMessageResponse(context);
             context.Result = new BadRequestObjectResult(errors);
         }
 
-        private ErrorMessagesDto CreateErrorListFromModelState(ActionExecutingContext context)
+        private ErrorMessagesDto CreateErrorMessageResponse(ActionExecutingContext context)
         {
             var errorList = new List<string>();
             foreach (var key in context.ModelState.Keys)
