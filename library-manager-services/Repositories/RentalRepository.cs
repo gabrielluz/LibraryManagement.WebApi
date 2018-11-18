@@ -23,7 +23,7 @@ namespace LibraryManager.Repositories
             _databaseProvider = databaseProvider;
         }
 
-        public Rental Insert(RentalDto rental) 
+        public Rental Insert(RentalOutputDto rental) 
         {
             string sql = @"INSTERT INTO Review(UserId, BookId, Rate, Comment)
                            VALUES(@UserId, @BookId, @Rate, @Comment);
@@ -38,7 +38,7 @@ namespace LibraryManager.Repositories
             return Get(rentalId);
         }
 
-        public Rental Update(long id, RentalDto review) 
+        public Rental Update(long id, RentalOutputDto review) 
         {
             return null;
 

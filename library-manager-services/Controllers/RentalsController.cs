@@ -8,7 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManager.Controllers
 {
-    public class RentalsController : ApiController
+    [ApiController]
+    [Route("api/[controller]")]
+    public class RentalsController : ControllerBase
     {
         private readonly IRentalRepository _rentalRepository;
 
@@ -24,16 +26,16 @@ namespace LibraryManager.Controllers
         public IActionResult Get(int id) 
         {
             return Ok(_rentalRepository.Get(id));
-        } 
+        }
 
         [HttpPost]
-        public IActionResult Post([FromBody] RentalDto Rental)
+        public IActionResult Post([FromBody] RentalOutputDto Rental)
         {
             return StatusCode(201, _rentalRepository.Insert(Rental));
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] RentalDto Rental)
+        public IActionResult Put(int id, [FromBody] RentalOutputDto Rental)
         {
             return Ok(_rentalRepository.Update(id, Rental));
         }

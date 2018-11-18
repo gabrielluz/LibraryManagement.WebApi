@@ -8,7 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManager.Controllers
 {
-    public class ReviewsController : ApiController
+    [Route("/api/books")]
+    public class ReviewsController : ControllerBase
     {
         private readonly IReviewRepository _reviewsRepository;
 
@@ -18,30 +19,32 @@ namespace LibraryManager.Controllers
         }
 
         [HttpGet]
+        [Route("{bookId}/reviews")]
         public IActionResult Get() => Ok(_reviewsRepository.GetAll());
 
-        [HttpGet("{id}")]
+        [HttpGet("{reviewId}")]
         public IActionResult Get(int id) 
         {
             return Ok(_reviewsRepository.Get(id));
         } 
 
         [HttpPost]
+        [Route("{bookId}/reviews")]
         public IActionResult Post([FromBody] ReviewDto review)
         {
             return StatusCode(201, _reviewsRepository.Insert(review));
         }
 
-        [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] ReviewDto review)
+        [HttpPut("{reviewId}")]
+        public IActionResult Put(int reviewId, [FromBody] ReviewDto review)
         {
-            return Ok(_reviewsRepository.Update(id, review));
+            return Ok(_reviewsRepository.Update(reviewId, review));
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        [HttpDelete("{reviewId}")]
+        public IActionResult Delete(int reviewId)
         {
-            _reviewsRepository.Delete(id);
+            _reviewsRepository.Delete(reviewId);
             return NoContent();
         }
     }

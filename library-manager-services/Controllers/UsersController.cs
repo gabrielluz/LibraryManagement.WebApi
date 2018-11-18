@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManager.Controllers
 {
-    public class UsersController : ApiController
+    [ApiController]
+    [Route("api/[controller]")]
+    public class UsersController : ControllerBase
     {
         private readonly ICrudRepository _crudRepository;
 

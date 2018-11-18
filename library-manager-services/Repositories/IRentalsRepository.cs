@@ -13,8 +13,8 @@ namespace LibraryManager.Repositories
 {
     public interface IRentalRepository
     {
-        Rental Insert(RentalDto review);
-        Rental Update(long id, RentalDto review);
+        Rental Insert(RentalOutputDto review);
+        Rental Update(long id, RentalOutputDto review);
         IEnumerable<Rental> GetAll();
         Rental Get(long id);
         void Delete(long id);

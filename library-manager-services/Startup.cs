@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LibraryManager.Filters;
 using LibraryManager.Middleware;
 using LibraryManager.Repositories;
 using Microsoft.AspNetCore.Builder;
@@ -32,7 +33,9 @@ namespace CSG_Library_Management
                 new MysqlDatabaseProvider(connectionString));
             services.AddScoped<ICrudRepository, CrudRepository>();
             services.AddScoped<IReviewRepository, ReviewRepository>();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc(opt => opt.Filters
+                .Add(typeof(ValidationActionFilter)))
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

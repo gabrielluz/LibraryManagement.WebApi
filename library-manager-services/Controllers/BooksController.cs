@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManager.Controllers
 {
-    public class BooksController : ApiController
+    [ApiController]
+    [Route("api/books")]
+    public class BooksController : ControllerBase
     {
         private readonly ICrudRepository _crudRepository;
 
