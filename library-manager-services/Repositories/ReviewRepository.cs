@@ -27,62 +27,65 @@ namespace LibraryManager.Repositories
             _databaseProvider = databaseProvider;
         }
 
-        public Review Insert(ReviewDto reviewDto)
+        public Review Insert(Review review)
         {
-            if (reviewDto == null)
+            if (review == null)
                 throw new ArgumentNullException("Review must be not null.");
 
-            var user = _crudRepository.Get<User>(reviewDto.UserId);
-            var book = _crudRepository.Get<Book>(reviewDto.BookId);
-            var sqlCommand = "INSERT INTO Review(Comment, Rate, UserId, BookId) "
-                + "VALUES (@Comment, @Rate, @UserId, @BookId);"
-                + "SELECT LAST_INSERT_ID();";
-            var sqlParams = new 
-            {
-                Comment = reviewDto.Comment,
-                Rate = reviewDto.Rate,
-                UserId = user.Id,
-                BookId = book.Id
-            };
+            // var user = _crudRepository.Get<User>(review.User.Id);
+            // var book = _crudRepository.Get<Book>(review.Book.Id);
+            // var sqlCommand = "INSERT INTO Review(Comment, Rate, UserId, BookId) "
+            //     + "VALUES (@Comment, @Rate, @UserId, @BookId);"
+            //     + "SELECT LAST_INSERT_ID();";
+            // var sqlParams = new 
+            // {
+            //     Comment = review.Comment,
+            //     Rate = review.Rate,
+            //     UserId = user.Id,
+            //     BookId = book.Id
+            // };
             var connection = _databaseProvider.GetConnection();
-            int insertedId = 0;
-            using (var reader = connection.ExecuteReader(sqlCommand, sqlParams))
-            {
-                if (reader.Read())
-                    insertedId = reader.GetInt32(0);
-            }
+            long insertedId = connection.Insert<Review>(review);
+            // using (var reader = connection.ExecuteReader(sqlCommand, sqlParams))
+            // {
+            //     if (reader.Read())
+            //         insertedId = reader.GetInt32(0);
+            // }
             return Get(insertedId);
         }
 
-        public Review Update(long id, ReviewDto reviewDto) 
+        public Review Update(long id, Review review) 
         {
-            User user = _crudRepository.Get<User>(reviewDto.UserId);
-            Book book = _crudRepository.Get<Book>(reviewDto.BookId);
-            string sql = "UPDATE Review SET Comment = @Comment, Rate = @Rate WHERE Id = @Id;";
-            int amountOfRecordsAffected = _databaseProvider.GetConnection().Execute(sql, new {
-                Comment = reviewDto.Comment,
-                Rate = reviewDto.Rate,
-                Id = id
-            });
-            return Get(reviewDto.Id);
+            // var sql = "UPDATE Review SET Comment = @Comment, Rate = @Rate WHERE Id = @Id;";
+            // var sqlParameters = new {
+            //     Comment = review.Comment,
+            //     Rate = review.Rate,
+            //     Id = id
+            // };
+            // _crudRepository.Get<User>(review.User.Id);
+            // _crudRepository.Get<Book>(review.Book.Id);
+            // _databaseProvider.GetConnection().Execute(sql, sqlParameters);
+            _databaseProvider.GetConnection().Update(review);
+            return Get(review.Id);
         }
 
         public IEnumerable<Review> GetAll() 
         {
             try
             {
-                string sql = @"SELECT 
-                            r.Id, r.Rate, r.Comment, b.*, u.* 
+                string sql = @"SELECT * 
                             FROM Review r 
+                            INNER JOIN User u ON r.UserId = u.Id
                             INNER JOIN Book b ON r.BookId = b.Id
-                            INNER JOIN User u ON r.UserId = u.Id;";
+                            ORDER BY r.Id;";
                 
-                var reader = _databaseProvider.GetConnection().ExecuteReader(sql);
-                var reviews = new Collection<Review>();
+                var reviews = _databaseProvider.GetConnection()
+                    .Query<Review, User, Book, Review>(sql, (review, user, book) => {
+                        review.User = user;
+                        review.Book = book;
+                        return review;
+                    });
                 
-                while (reader.Read())
-                    reviews.Add(ReadReviewFromDatabase(reader));
-
                 return reviews;
             }
             catch (SqlException ex)
@@ -95,64 +98,32 @@ namespace LibraryManager.Repositories
         {
             try 
             {
-                string sql = @"SELECT 
-                            r.Id, r.Rate, r.Comment, b.*, u.* 
+                var queryParameter = new { Id = id };
+                
+                var query = @"SELECT *
                             FROM Review r 
-                            INNER JOIN Book b ON r.BookId = b.Id
                             INNER JOIN User u ON r.UserId = u.Id
                             Where r.Id = @Id;";
-                var reader = _databaseProvider.GetConnection().ExecuteReader(sql, new { Id = id });
                 
-                if (!reader.Read())
-                    throw new EntityNotFoundException(nameof(Review), id);
+                var review = _databaseProvider
+                    .GetConnection()
+                    .Query<Review, User, Review>(query, IncludeUser, queryParameter)
+                    .FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Review), id);
 
-                return ReadReviewFromDatabase(reader);
+                return review;
             }
             catch (SqlException ex)
             {
                 throw new Exception("Error while reading Review from database.", ex);
             }
-        } 
+        }
 
         public void Delete(long id) => _crudRepository.Delete<Review>(id);
 
-        private Review ReadReviewFromDatabase(IDataReader reader)
+        private Review IncludeUser(Review review, User user)
         {
-            User user = ReadUserFromDatabase(reader);
-            Book book = ReadBookFromDatabase(reader);
-            return new Review
-            {
-                Id = reader.GetInt64(0),
-                Rate = reader.GetInt16(1),
-                Comment = reader.GetString(2),
-                User = ReadUserFromDatabase(reader),
-                Book = ReadBookFromDatabase(reader)
-            };
-        }
-
-        private Book ReadBookFromDatabase(IDataReader reader)
-        {
-            var book = new Book
-            {
-                Id = reader.GetInt32(3),
-                Title = reader.GetString(4),
-                Author = reader.GetString(5),
-                Description = reader.GetString(6)
-            };
-            return book;
-        }
-
-        private User ReadUserFromDatabase(IDataReader reader)
-        {
-            var user = new User
-            {
-                Id = reader.GetInt32(7),
-                Email = reader.GetString(8),
-                FirstName = reader.GetString(10),
-                LastName = reader.GetString(11),
-                Description = reader.GetString(12)
-            };
-            return user;
+            review.User = user;
+            return review;
         }
     }
 }

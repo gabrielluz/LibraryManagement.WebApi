@@ -13,8 +13,8 @@ namespace LibraryManager.Repositories
 {
     public interface IReviewRepository
     {
-        Review Insert(ReviewDto review);
-        Review Update(long id, ReviewDto review);
+        Review Insert(Review review);
+        Review Update(long id, Review review);
         IEnumerable<Review> GetAll();
         Review Get(long id);
         void Delete(long id);
