@@ -13,8 +13,6 @@ namespace LibraryManager.Models.Dto
         public long UserId { get; set; }
         
         [Required(ErrorMessage = "Issued date is required.")]
-        public DateTime Issued { get; set; }
-        public DateTime Returned { get; set; }
         public string Comment { get; set; }
     }
 }

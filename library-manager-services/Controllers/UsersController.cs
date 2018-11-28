@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LibraryManager.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route(Constants.UserBaseRoute)]
     public class UsersController : ControllerBase
     {
         private readonly ICrudRepository _crudRepository;
@@ -22,7 +22,7 @@ namespace LibraryManager.Controllers
         public IActionResult Get() => Ok(_crudRepository.GetAll<User>());
 
         [HttpGet("{id}")]
-        public IActionResult Get(long id) 
+        public IActionResult Get(long id)
         {
             return Ok(_crudRepository.Get<User>(id));
         } 

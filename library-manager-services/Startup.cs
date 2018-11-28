@@ -61,6 +61,7 @@ namespace CSG_Library_Management
         {
             services.AddScoped<ICrudRepository, CrudRepository>();
             services.AddScoped<IReviewRepository, ReviewRepository>();
+            services.AddScoped<IRentalRepository, RentalRepository>();
             return services;
         }
 
@@ -80,17 +81,6 @@ namespace CSG_Library_Management
             });
             var mapper = mappingConfig.CreateMapper();
             services.AddSingleton(mapper);
-            // services.AddAutoMapper(configuration => {
-            //     configuration.CreateMap<ReviewInputDto, Review>()
-            //         .ForMember(r => r.Book, opt => opt.Ignore())
-            //         .ForMember(r => r.User, opt => opt.Ignore());
-                
-                // configuration.CreateMap<Review, ReviewOutputDto>();
-                // configuration.CreateMap<Book, BookInputDto>();
-                // configuration.CreateMap<Book, BookOutputDto>();
-                // configuration.CreateMap<Rental, RentalInputDto>();
-                // configuration.CreateMap<Rental, RentalOutputDto>();
-            // });
             return services;
         }
     }
@@ -106,7 +96,8 @@ namespace CSG_Library_Management
             CreateMap<Book, BookInputDto>();
             CreateMap<Book, BookOutputDto>();
             CreateMap<Rental, RentalInputDto>();
-            CreateMap<Rental, RentalOutputDto>();
+            CreateMap<Rental, RentalOutputDto>()
+                .ForPath(dto => dto.UserId, opt => opt.MapFrom(entity => entity.User.Id));
         }
     }
 }

@@ -23,41 +23,45 @@ namespace LibraryManager.Repositories
             _databaseProvider = databaseProvider;
         }
 
-        public Rental Insert(RentalOutputDto rental) 
+        public Rental Insert(Rental rental) 
         {
-            string sql = @"INSTERT INTO Review(UserId, BookId, Rate, Comment)
-                           VALUES(@UserId, @BookId, @Rate, @Comment);
+            string sql = @"INSTERT INTO Rental(UserId, BookId, Issued
+                           VALUES(@UserId, @BookId, @Issued);
                            SELECT LAST_INSERT_ID();";
             
-            int rentalId = _databaseProvider.GetConnection().Execute(sql, new {
-                rental.UserId,
-                rental.BookId,
-                DateTime.Now
-            });
-
-            return Get(rentalId);
+            var reader = _databaseProvider
+                .GetConnection()
+                .ExecuteReader(sql, new {
+                    UserId = rental.User.Id,
+                    BookId = rental.Book.Id,
+                    Issued = DateTime.Now
+                });
+            reader.Read();
+            return Get(reader.GetInt32(0));
         }
 
-        public Rental Update(long id, RentalOutputDto review) 
+        public Rental Update(Rental rental) 
         {
-            return null;
-
+            var sql = "UPDATE Rental SET Returned = @Returned WHERE Id = @Id;";
+            var conn = _databaseProvider.GetConnection();
+            conn.Execute(sql, new { rental.Returned, rental.Id });
+            return Get(rental.Id);
         }
 
         public IEnumerable<Rental> GetAll() 
         {
-            return null;
-
+            return _crudRepository.GetAll<Rental>();
         }
 
         public Rental Get(long id) 
         {
-            return null;
-
+            return _crudRepository.Get<Rental>(id)
+                ?? throw new EntityNotFoundException(nameof(Rental), id);
         }
 
         public void Delete(long id) 
         {
+            Get(id);
             _crudRepository.Delete<Rental>(id);
         }
     }

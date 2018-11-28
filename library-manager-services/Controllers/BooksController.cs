@@ -22,7 +22,7 @@ namespace LibraryManager.Controllers
         public IActionResult Get() => Ok(_crudRepository.GetAll<Book>());
 
         [HttpGet("{id}")]
-        public IActionResult Get(int id) 
+        public IActionResult Get(long id) 
         {
             return Ok(_crudRepository.Get<Book>(id));
         } 
@@ -34,13 +34,13 @@ namespace LibraryManager.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Book Book)
+        public IActionResult Put(long id, [FromBody] Book Book)
         {
             return Ok(_crudRepository.Update(id, Book));
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(long id)
         {
             _crudRepository.Delete<Book>(id);
             return NoContent();

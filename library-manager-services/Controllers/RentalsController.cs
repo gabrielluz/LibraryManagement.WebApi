@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using AutoMapper;
 using LibraryManager.Exceptions;
 using LibraryManager.Models.Dto;
 using LibraryManager.Models.Entities;
@@ -13,35 +14,41 @@ namespace LibraryManager.Controllers
     public class RentalsController : ControllerBase
     {
         private readonly IRentalRepository _rentalRepository;
+        private readonly IMapper _mapper;
 
-        public RentalsController(IRentalRepository rentalRepository) : base() 
+        public RentalsController(
+            IRentalRepository rentalRepository,
+            IMapper mapper) : base() 
         {
             _rentalRepository = rentalRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public IActionResult Get() => Ok(_rentalRepository.GetAll());
 
         [HttpGet("{id}")]
-        public IActionResult Get(int id) 
+        public IActionResult Get(long id) 
         {
             return Ok(_rentalRepository.Get(id));
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] RentalOutputDto Rental)
+        public IActionResult Post([FromBody] RentalInputDto dto)
         {
-            return StatusCode(201, _rentalRepository.Insert(Rental));
+            var entity = _mapper.Map<Rental>(dto);
+            return StatusCode(201, _rentalRepository.Insert(entity));
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] RentalOutputDto Rental)
+        public IActionResult Put(long id, [FromBody] RentalInputDto dto)
         {
-            return Ok(_rentalRepository.Update(id, Rental));
+            var entity = _rentalRepository.Get(id);
+            return Ok(_rentalRepository.Update(entity));
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(long id)
         {
             _rentalRepository.Delete(id);
             return NoContent();

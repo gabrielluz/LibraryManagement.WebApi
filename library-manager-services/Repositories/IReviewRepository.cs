@@ -14,9 +14,9 @@ namespace LibraryManager.Repositories
     public interface IReviewRepository
     {
         Review Insert(Review review);
-        Review Update(long id, Review review);
-        IEnumerable<Review> GetAll();
-        Review Get(long id);
+        Review Update(long bookId, Review review);
+        IEnumerable<Review> GetAll(long bookId);
+        Review Get(long bookId, long reviewId);
         void Delete(long id);
     }
 }

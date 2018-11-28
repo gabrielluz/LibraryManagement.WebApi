@@ -25,15 +25,12 @@ namespace LibraryManager.Repositories
             return _databaseConnection.GetAll<T>();
         }
 
-        public T Get<T>(long? id) where T : class, IEntity 
+        public T Get<T>(long id) where T : class, IEntity 
         {
-            if (!id.HasValue)
-                throw new ArgumentNullException("id");
-
             var entity = _databaseConnection.Get<T>(id);
 
             if (entity == null)
-                throw new EntityNotFoundException(typeof(T).Name, id.Value);
+                throw new EntityNotFoundException(typeof(T).Name, id);
                 
             return entity;
         }
@@ -44,29 +41,18 @@ namespace LibraryManager.Repositories
             return entity;
         }
 
-        public T Update<T>(long? id, T entity) where T : class, IEntity 
+        public T Update<T>(long id, T entity) where T : class, IEntity 
         {
-            if (!id.HasValue)
-                throw new ArgumentNullException("id");
-
             if (!_databaseConnection.Update<T>(entity))
-                throw new EntityNotFoundException(typeof(T).Name, id.Value);
+                throw new EntityNotFoundException(typeof(T).Name, id);
             
-            entity.Id = id.Value;
+            entity.Id = id;
             return entity;
         }
 
-        public void Delete<T>(long? id) where T : class, IEntity
+        public void Delete<T>(long id) where T : class, IEntity
         {
-            if (!id.HasValue)
-                throw new ArgumentNullException("id");
-
-            var entity = _databaseConnection.Get<T>(id);
-
-            if (entity == null)
-                throw new EntityNotFoundException(typeof(T).Name, id.Value);
-            
-            _databaseConnection.Delete(entity);
+            _databaseConnection.Delete(Get<T>(id));
         }
     }
 }
