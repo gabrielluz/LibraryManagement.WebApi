@@ -8,6 +8,7 @@ using LibraryManagerApi.Middleware;
 using LibraryManagerApi.Models.Dto;
 using LibraryManagerApi.Models.Entities;
 using LibraryManagerApi.Repositories;
+using LibraryManagerApi.Utils;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -45,59 +46,6 @@ namespace CSG_Library_Management
             app.UseHsts();
             app.UseHttpsRedirection();
             app.UseMvc();
-        }
-    }
-
-    public static class ConfigurationMethods
-    {
-        public static IServiceCollection ConfigureDatabase(this IServiceCollection services, string connectionString)
-        {
-            services.AddScoped<IDatabaseProvider, MysqlDatabaseProvider>(db => 
-                new MysqlDatabaseProvider(connectionString));
-            return services;
-        }
-
-        public static IServiceCollection ConfigureDependencyInjection(this IServiceCollection services)
-        {
-            services.AddScoped<ICrudRepository, CrudRepository>();
-            services.AddScoped<IReviewRepository, ReviewRepository>();
-            services.AddScoped<IRentalRepository, RentalRepository>();
-            return services;
-        }
-
-        public static IServiceCollection ConfigureMvc(this IServiceCollection services)
-        {
-            services.AddMvc(opt => opt.Filters
-                .Add(typeof(ValidationActionFilter)))
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            return services;
-        }
-
-        public static IServiceCollection ConfigureAutoMapper(this IServiceCollection services)
-        {
-            var mappingConfig = new MapperConfiguration(mc =>
-            {
-                mc.AddProfile(new MappingProfile());
-            });
-            var mapper = mappingConfig.CreateMapper();
-            services.AddSingleton(mapper);
-            return services;
-        }
-    }
-
-    public class MappingProfile : Profile
-    {
-        public MappingProfile()
-        {
-            CreateMap<ReviewInputDto, Review>()
-                .ForPath(e => e.User, opt => opt.Ignore())
-                .ForPath(e => e.Book, opt => opt.Ignore());
-            CreateMap<Review, ReviewOutputDto>();
-            CreateMap<Book, BookInputDto>();
-            CreateMap<Book, BookOutputDto>();
-            CreateMap<Rental, RentalInputDto>();
-            CreateMap<Rental, RentalOutputDto>()
-                .ForPath(dto => dto.UserId, opt => opt.MapFrom(entity => entity.User.Id));
         }
     }
 }
