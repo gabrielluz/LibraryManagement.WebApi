@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/library-manager-services/CSG Library Management.csproj"
+                "${workspaceFolder}/LibraryManagerApi/CSG Library Management.csproj"
             ],
             "problemMatcher": "$msCompile"
         }
