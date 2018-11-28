@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace CSG_Library_Management
+namespace LibraryManagerApi
 {
     public class Program
     {
