@@ -18,7 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace CSG_Library_Management
+namespace LibraryManagerApi
 {
     public class Startup
     {
