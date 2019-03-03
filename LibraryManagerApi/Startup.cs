@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using LibraryManagerApi.Controllers;
 using LibraryManagerApi.Filters;
 using LibraryManagerApi.Middleware;
 using LibraryManagerApi.Models.Dto;
@@ -37,6 +38,8 @@ namespace LibraryManagerApi
             services.ConfigureDependencyInjection();
             services.ConfigureMvc();
             services.AddAutoMapper();
+            
+            services.AddSwaggerDocument();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,6 +49,8 @@ namespace LibraryManagerApi
             app.UseHsts();
             app.UseHttpsRedirection();
             app.UseMvc();
+            app.UseSwagger();
+            app.UseSwaggerUi3();
         }
     }
 }
