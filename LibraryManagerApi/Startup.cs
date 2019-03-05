@@ -38,8 +38,14 @@ namespace LibraryManagerApi
             services.ConfigureDependencyInjection();
             services.ConfigureMvc();
             services.AddAutoMapper();
-            
-            services.AddSwaggerDocument();
+            services.AddSwaggerDocument(sc => 
+            {
+                sc.Title = "Library Management API";
+                sc.DocumentName = "Library Management API Documentation";
+                sc.Version = "1";
+                sc.Description = "This is a small API I use to learn new things related to ASP.NET Core, "
+                    + "web APIs, and some .NET frameworks in general such as Dapper, NSwag, etc.";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
