@@ -53,7 +53,7 @@ namespace LibraryManagerApi
         {
             app.UseMiddleware<ExceptionMiddeware>();
             app.UseHsts();
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
             app.UseMvc();
             app.UseSwagger();
             app.UseSwaggerUi3();
