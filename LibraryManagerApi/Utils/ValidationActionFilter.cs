@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using LibraryManagerApi.Exceptions;
 using LibraryManagerApi.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -13,19 +15,16 @@ namespace LibraryManagerApi.Filters
             if (context.ModelState.IsValid)
                 return;
 
-            var errors = CreateErrorMessageResponse(context);
-            context.Result = new BadRequestObjectResult(errors);
+            // throw new InvalidInputException(BuildErrorMessageEnumerable(context));
+            var errorMessagessDto = new ErrorMessagesDto(BuildErrorMessageEnumerable(context));
+            context.Result = new BadRequestObjectResult(errorMessagessDto);
         }
 
-        private ErrorMessagesDto CreateErrorMessageResponse(ActionExecutingContext context)
+        private IEnumerable<string> BuildErrorMessageEnumerable(ActionExecutingContext context)
         {
-            var errorList = new List<string>();
-            foreach (var key in context.ModelState.Keys)
-            {
-                foreach (var error in context.ModelState[key].Errors)
-                    errorList.Add(error.ErrorMessage);
-            }
-            return new ErrorMessagesDto(errorList);
+            return context.ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage);
         }
     }
 }
