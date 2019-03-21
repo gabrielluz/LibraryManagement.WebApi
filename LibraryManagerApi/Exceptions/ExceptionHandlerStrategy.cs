@@ -13,7 +13,7 @@ namespace LibraryManagerApi.Exceptions
             return ExceptionHandlerAbstractFactory.Build(ex).HandleException(response);
         }
 
-        public string SerializeErrorMessage(string message) => JsonConvert.SerializeObject(new { message });
+        protected string SerializeErrorMessage(string message) => JsonConvert.SerializeObject(new { message });
 
         public abstract Task HandleException(HttpResponse response);
     }
