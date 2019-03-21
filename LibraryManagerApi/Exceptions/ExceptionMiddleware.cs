@@ -22,50 +22,8 @@ namespace LibraryManagerApi.Exceptions
             }
             catch (Exception ex)
             {
-                await HandleExceptionAsync(context, ex);
+                await ExceptionHandlerStrategy.HandleException(context.Response, ex);
             }
-        }
-
-        private Task HandleExceptionAsync(HttpContext context, Exception ex)
-        {
-            context.Response.ContentType = "application/json";
-            switch (ex)
-            {
-                case EntityNotFoundException notFoundException:
-                    return HandleNotFound(context, notFoundException);
-                case ArgumentException argumentException:
-                    return HandleArgumentException(context, argumentException);
-            }
-            return HandleException(context);
-        }
-
-        private Task HandleException(HttpContext context)
-        {
-            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            return context
-                .Response
-                .WriteAsync(SerializeErrorMessage("Internal server error."));                
-        }
-
-        private Task HandleArgumentException(HttpContext context, ArgumentException ex)
-        {
-            context.Response.StatusCode = StatusCodes.Status400BadRequest;
-            return context
-                .Response
-                .WriteAsync(SerializeErrorMessage(ex.Message));                
-        }
-
-        private Task HandleNotFound(HttpContext context, EntityNotFoundException ex)
-        {
-            context.Response.StatusCode = StatusCodes.Status404NotFound;
-            return context
-                .Response
-                .WriteAsync(SerializeErrorMessage(ex.Message));
-        }
-
-        private string SerializeErrorMessage(string message)
-        {
-            return JsonConvert.SerializeObject(new { message });
         }
     }
 }
