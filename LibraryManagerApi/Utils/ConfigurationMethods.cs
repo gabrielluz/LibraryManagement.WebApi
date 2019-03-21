@@ -25,11 +25,11 @@ namespace LibraryManagerApi.Utils
 
         public static IServiceCollection ConfigureMvc(this IServiceCollection services)
         {
-            services
-                .Configure<ApiBehaviorOptions>(c => c.SuppressModelStateInvalidFilter = true)
-                .AddMvc(opt => opt.Filters
-                .Add(typeof(ValidationActionFilter)))
+            services.Configure<ApiBehaviorOptions>(config => config.SuppressModelStateInvalidFilter = true);
+            
+            services.AddMvc(opt => opt.Filters.Add(typeof(ValidationActionFilter)))
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            
             return services;
         }
 
