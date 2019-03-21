@@ -43,5 +43,17 @@ namespace LibraryManagerApi.Utils
             services.AddSingleton(mapper);
             return services;
         }
+
+        public static IServiceCollection ConfigureSwagger(this IServiceCollection services)
+        {
+            return services.AddSwaggerDocument(sc => 
+            {
+                sc.Title = "Library Management API";
+                sc.DocumentName = "Library Management API Documentation";
+                sc.Version = "1";
+                sc.Description = "This is a small API I use to learn new things related to ASP.NET Core, "
+                    + "web APIs, and some .NET frameworks in general such as Dapper, NSwag, etc.";
+            });
+        }
     }
 }
