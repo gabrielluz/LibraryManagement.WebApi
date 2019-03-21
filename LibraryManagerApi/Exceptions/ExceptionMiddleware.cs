@@ -1,13 +1,9 @@
 using System;
 using System.Threading.Tasks;
-using LibraryManagerApi.Exceptions;
-using LibraryManagerApi.Models.Dto;
-using LibraryManagerApi.Models.Entities;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace LibraryManagerApi.Middleware
+namespace LibraryManagerApi.Exceptions
 {
     public class ExceptionMiddeware
     {
