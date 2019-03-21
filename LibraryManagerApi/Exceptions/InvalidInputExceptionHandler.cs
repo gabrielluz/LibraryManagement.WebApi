@@ -22,7 +22,7 @@ namespace LibraryManagerApi.Exceptions
 
         private string GetSerializedErrorList()
         {
-            return JsonConvert.SerializeObject(_invalidInputException.Errors);
+            return JsonConvert.SerializeObject(new { errorMessages = _invalidInputException.Errors });
         }
     }
 }
