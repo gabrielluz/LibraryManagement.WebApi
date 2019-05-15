@@ -14,6 +14,7 @@ namespace src.Utils
 
         public override void OnException(ExceptionContext context)
         {
+            context.HttpContext.Response.ContentType = "application/json";
             var exceptionHandler = _exceptionHandlerFactory.Build(context.Exception);
             exceptionHandler.HandleException(context.HttpContext.Response);
         }
