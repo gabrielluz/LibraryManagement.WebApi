@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace LibraryManagerApi.Exceptions
 {
-    public class InvalidInputExceptionHandler : ExceptionHandlerStrategy
+    public class InvalidInputExceptionHandler : BaseExceptionHandler
     {
         private readonly InvalidInputException _invalidInputException;
 

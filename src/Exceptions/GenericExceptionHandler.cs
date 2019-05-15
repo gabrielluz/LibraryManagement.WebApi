@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace LibraryManagerApi.Exceptions
 {
-    internal class GenericExceptionHandler : ExceptionHandlerStrategy
+    internal class GenericExceptionHandler : BaseExceptionHandler
     {
         private readonly Exception _ex;
 

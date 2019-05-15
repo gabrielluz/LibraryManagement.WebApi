@@ -17,10 +17,7 @@ namespace LibraryManagerApi.Controllers
         private readonly ICrudRepository _crudRepository;
         private readonly IMapper _mapper;
 
-        public ReviewsController(
-            IReviewRepository reviewRepository, 
-            ICrudRepository crudRepository,
-            IMapper mapper) : base() 
+        public ReviewsController(IReviewRepository reviewRepository, ICrudRepository crudRepository, IMapper mapper) : base() 
         {
             _reviewsRepository = reviewRepository;
             _crudRepository = crudRepository;
@@ -29,7 +26,7 @@ namespace LibraryManagerApi.Controllers
 
         [HttpGet]
         [Route("{bookId}/reviews")]
-        public IActionResult Get(long bookId)
+        public ActionResult<IEnumerable<ReviewOutputDto>> Get(long bookId)
         {
             _crudRepository.Get<Book>(bookId);
             var reviews = _reviewsRepository
@@ -39,7 +36,7 @@ namespace LibraryManagerApi.Controllers
         } 
 
         [HttpGet("{bookId}/reviews/{reviewId}")]
-        public IActionResult Get(long bookId, long reviewId) 
+        public ActionResult<ReviewOutputDto> Get(long bookId, long reviewId) 
         {
             _crudRepository.Get<Book>(bookId);
             var review = _reviewsRepository.Get(bookId, reviewId);
@@ -49,7 +46,7 @@ namespace LibraryManagerApi.Controllers
 
         [HttpPost]
         [Route("{bookId}/reviews")]
-        public IActionResult Post(long bookId, [FromBody] ReviewInputDto reviewDto)
+        public ActionResult<ReviewOutputDto> Post(long bookId, [FromBody] ReviewInputDto reviewDto)
         {
             var review = _mapper.Map<ReviewInputDto, Review>(reviewDto);
             review.User = _crudRepository.Get<User>(reviewDto.UserId);
@@ -60,7 +57,7 @@ namespace LibraryManagerApi.Controllers
         }
 
         [HttpPut("{bookId}/reviews/{reviewId}")]
-        public IActionResult Put(long bookId, long reviewId, [FromBody] ReviewInputDto reviewDto)
+        public ActionResult<ReviewOutputDto> Put(long bookId, long reviewId, [FromBody] ReviewInputDto reviewDto)
         {
             _crudRepository.Get<Book>(bookId);
             var review = _reviewsRepository.Get(bookId, reviewId);

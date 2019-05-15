@@ -25,30 +25,30 @@ namespace LibraryManagerApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get() => Ok(_rentalRepository.GetAll());
+        public ActionResult<IEnumerable<Rental>> Get() => Ok(_rentalRepository.GetAll());
 
         [HttpGet("{id}")]
-        public IActionResult Get(long id) 
+        public ActionResult<Rental> Get(long id) 
         {
             return Ok(_rentalRepository.Get(id));
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] RentalInputDto dto)
+        public ActionResult<Rental> Post([FromBody] RentalInputDto dto)
         {
             var entity = _mapper.Map<Rental>(dto);
             return StatusCode(201, _rentalRepository.Insert(entity));
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(long id, [FromBody] RentalInputDto dto)
+        public ActionResult<Rental> Put(long id, [FromBody] RentalInputDto dto)
         {
             var entity = _rentalRepository.Get(id);
             return Ok(_rentalRepository.Update(entity));
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(long id)
+        public ActionResult<Rental> Delete(long id)
         {
             _rentalRepository.Delete(id);
             return NoContent();

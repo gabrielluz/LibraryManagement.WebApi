@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace LibraryManagerApi.Exceptions
 {
-    internal interface IExceptionHandler
+    public interface IExceptionHandler
     {
         Task HandleException(HttpResponse response);
     }

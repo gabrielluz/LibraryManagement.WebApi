@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace LibraryManagerApi.Exceptions
 {
-    internal class EntityNotFoundExceptionHandler : ExceptionHandlerStrategy
+    internal class EntityNotFoundExceptionHandler : BaseExceptionHandler
     {
         private readonly EntityNotFoundException _notFoundException;
 

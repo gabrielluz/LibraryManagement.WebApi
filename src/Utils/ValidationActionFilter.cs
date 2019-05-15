@@ -15,9 +15,7 @@ namespace LibraryManagerApi.Filters
             if (context.ModelState.IsValid)
                 return;
 
-            // throw new InvalidInputException(BuildErrorMessageEnumerable(context));
-            var errorMessagessDto = new ErrorMessagesDto(BuildErrorMessageEnumerable(context));
-            context.Result = new BadRequestObjectResult(errorMessagessDto);
+            throw new InvalidInputException(BuildErrorMessageEnumerable(context));
         }
 
         private IEnumerable<string> BuildErrorMessageEnumerable(ActionExecutingContext context)

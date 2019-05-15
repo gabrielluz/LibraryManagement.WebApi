@@ -5,14 +5,8 @@ using Newtonsoft.Json;
 
 namespace LibraryManagerApi.Exceptions
 {
-    public abstract class ExceptionHandlerStrategy : IExceptionHandler
+    public abstract class BaseExceptionHandler : IExceptionHandler
     {
-        public static Task HandleException(HttpResponse response, Exception ex) 
-        {
-            response.ContentType = "application/json";
-            return ExceptionHandlerAbstractFactory.Build(ex).HandleException(response);
-        }
-
         protected string SerializeErrorMessage(string message) => JsonConvert.SerializeObject(new { message });
 
         public abstract Task HandleException(HttpResponse response);

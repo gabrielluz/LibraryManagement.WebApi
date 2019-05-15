@@ -1,8 +1,10 @@
 using AutoMapper;
+using LibraryManagerApi.Exceptions;
 using LibraryManagerApi.Filters;
 using LibraryManagerApi.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using src.Utils;
 
 namespace LibraryManagerApi.Utils
 {
@@ -20,15 +22,21 @@ namespace LibraryManagerApi.Utils
             services.AddScoped<ICrudRepository, CrudRepository>();
             services.AddScoped<IReviewRepository, ReviewRepository>();
             services.AddScoped<IRentalRepository, RentalRepository>();
+            services.AddSingleton<ExceptionHandlerAbstractFactory>();
             return services;
         }
 
         public static IServiceCollection ConfigureMvc(this IServiceCollection services)
         {
             services.Configure<ApiBehaviorOptions>(config => config.SuppressModelStateInvalidFilter = true);
-            
-            services.AddMvc(opt => opt.Filters.Add(typeof(ValidationActionFilter)))
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc(opt => 
+            {
+                opt.RespectBrowserAcceptHeader = true;
+                opt.Filters.Add(typeof(ExceptionFilter));
+                opt.Filters.Add(typeof(ValidationActionFilter));
+            })
+            .AddXmlSerializerFormatters()
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             
             return services;
         }

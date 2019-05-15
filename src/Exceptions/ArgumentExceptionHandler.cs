@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace LibraryManagerApi.Exceptions
 {
-    internal class ArgumentExceptionHandler : ExceptionHandlerStrategy
+    internal class ArgumentExceptionHandler : BaseExceptionHandler
     {
         private readonly ArgumentException _argumentException;
 

@@ -19,28 +19,28 @@ namespace LibraryManagerApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get() => Ok(_crudRepository.GetAll<Book>());
+        public ActionResult<Book> Get() => Ok(_crudRepository.GetAll<Book>());
 
         [HttpGet("{id}")]
-        public IActionResult Get(long id) 
+        public ActionResult<Book> Get(long id) 
         {
             return Ok(_crudRepository.Get<Book>(id));
         } 
 
         [HttpPost]
-        public IActionResult Post([FromBody] Book Book)
+        public ActionResult<Book> Post([FromBody] Book Book)
         {
             return StatusCode(201 , _crudRepository.Insert(Book));
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(long id, [FromBody] Book Book)
+        public ActionResult<Book> Put(long id, [FromBody] Book Book)
         {
             return Ok(_crudRepository.Update(id, Book));
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(long id)
+        public ActionResult<Book> Delete(long id)
         {
             _crudRepository.Delete<Book>(id);
             return NoContent();
