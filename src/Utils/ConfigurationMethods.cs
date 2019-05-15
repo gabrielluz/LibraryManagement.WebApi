@@ -31,7 +31,6 @@ namespace LibraryManagerApi.Utils
             services.Configure<ApiBehaviorOptions>(config => config.SuppressModelStateInvalidFilter = true);
             services.AddMvc(opt => 
             {
-                opt.RespectBrowserAcceptHeader = true;
                 opt.Filters.Add(typeof(ExceptionFilter));
                 opt.Filters.Add(typeof(ValidationActionFilter));
             })
