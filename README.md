@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/gabrielluz/LibraryManagement.WebApi.svg?branch=master)](https://travis-ci.com/gabrielluz/LibraryManagement.WebApi)
+
 This repository was created to develop a POC (Proof of Concept).
 
 The software is being developed, it's a stock manager to control the rentals of my team's books.
