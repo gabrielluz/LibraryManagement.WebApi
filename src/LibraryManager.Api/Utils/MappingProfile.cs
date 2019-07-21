@@ -19,8 +19,6 @@ namespace LibraryManager.Api.Utils
             CreateMap<BookInputDto, Book>()
                 .ForPath(e => e.Id, opt => opt.Ignore());
             
-            CreateMap<Book, BookOutputDto>();
-            
             CreateMap<RentalInputDto, Rental>()
                 .ForPath(e => e.Id, opt => opt.Ignore())
                 .ForPath(e => e.Book.Id, opt => opt.MapFrom(dto => dto.BookId))
@@ -28,6 +26,9 @@ namespace LibraryManager.Api.Utils
             
             CreateMap<Rental, RentalOutputDto>()
                 .ForPath(dto => dto.UserId, opt => opt.MapFrom(entity => entity.User.Id));
+        
+            CreateMap<UserInputDto, User>()
+                .ForPath(e => e.Id, opt => opt.Ignore());
         }
     }
 }

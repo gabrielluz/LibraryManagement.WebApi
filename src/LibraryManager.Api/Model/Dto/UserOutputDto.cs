@@ -1,12 +1,7 @@
-using System.ComponentModel.DataAnnotations;
-using Dapper.Contrib.Extensions;
-
-namespace LibraryManager.Api.Models.Entities
+namespace LibraryManager.Api.Models.Dto
 {
-    [Table("User")]
-    public class User : IEntity
+    public class UserOutputDto
     {
-        [Dapper.Contrib.Extensions.Key]
         public long Id { get; set; }
         public string Email { get; set; }
         public string FirstName { get; set; }
