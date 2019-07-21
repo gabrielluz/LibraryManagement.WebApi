@@ -19,7 +19,7 @@ namespace LibraryManager.Api.Repositories
 
         T Insert<T>(T entity) where T : class, IEntity;
 
-        T Update<T>(long id, T entity) where T : class, IEntity;
+        T Update<T>(T entity) where T : class, IEntity;
 
         void Delete<T>(long id) where T : class, IEntity;
     }

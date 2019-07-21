@@ -36,7 +36,7 @@ namespace LibraryManager.Api.Controllers
         [HttpPut("{id}")]
         public ActionResult<User> Put(long id, [FromBody] User user)
         {
-            return Ok(_crudRepository.Update(id, user));
+            return Ok(_crudRepository.Update(user));
         }
 
         [HttpDelete("{id}")]

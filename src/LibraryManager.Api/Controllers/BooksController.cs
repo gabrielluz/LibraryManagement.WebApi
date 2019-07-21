@@ -31,7 +31,7 @@ namespace LibraryManager.Api.Controllers
             var books = _crudRepository.GetAll<Book>();
             var booksOutputDto = new Collection<BookOutputDto>();
 
-            foreach (var book in books ?? Enumerable.Empty<Book>())
+            foreach (var book in books)
             {
                 var bookOutputDto = _mapper.Map<BookOutputDto>(book);
                 booksOutputDto.Add(bookOutputDto);
@@ -60,8 +60,13 @@ namespace LibraryManager.Api.Controllers
         [HttpPut("{id}")]
         public ActionResult<BookOutputDto> Put(long id, [FromBody] BookInputDto bookInputDto)
         {
-            var bookToUpdate = _mapper.Map<Book>(bookInputDto);
-            var updatedBook = _crudRepository.Update(id, bookToUpdate);
+            var bookToBeUpdated = _crudRepository.Get<Book>(id);
+
+            bookToBeUpdated.Author = bookInputDto.Author;
+            bookToBeUpdated.Description = bookInputDto.Description;
+            bookToBeUpdated.Title = bookInputDto.Title;
+
+            var updatedBook = _crudRepository.Update(bookToBeUpdated);
             var updatedBookDto = _mapper.Map<BookOutputDto>(updatedBook);
             return Ok(updatedBookDto);
         }

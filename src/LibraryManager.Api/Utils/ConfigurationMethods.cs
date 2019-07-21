@@ -3,6 +3,7 @@ using LibraryManager.Api.Exceptions;
 using LibraryManager.Api.Filters;
 using LibraryManager.Api.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using src.Utils;
 
@@ -10,10 +11,12 @@ namespace LibraryManager.Api.Utils
 {
     public static class ConfigurationMethods
     {
-        public static IServiceCollection ConfigureDatabase(this IServiceCollection services, string connectionString)
+        public static IServiceCollection ConfigureDatabase(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped<IDatabaseProvider, MysqlDatabaseProvider>(db => 
-                new MysqlDatabaseProvider(connectionString));
+            var connectionString = configuration.GetConnectionString("LibraryManagerApiConnection");
+
+            services.AddScoped<IDatabaseProvider, MysqlDatabaseProvider>(db => new MysqlDatabaseProvider(connectionString));
+            
             return services;
         }
 
@@ -42,10 +45,14 @@ namespace LibraryManager.Api.Utils
 
         public static IServiceCollection ConfigureAutoMapper(this IServiceCollection services)
         {
+            services.AddAutoMapper();
             var mappingConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new MappingProfile());
             });
+
+            mappingConfig.AssertConfigurationIsValid();
+            
             var mapper = mappingConfig.CreateMapper();
             services.AddSingleton(mapper);
             return services;

@@ -8,6 +8,6 @@ namespace LibraryManager.Api.Models.Dto
         public long Id { get; set; }
         public int Rate { get; set; }
         public string Comment { get; set; }
-        public User User { get; set; }
+        public long UserId { get; set; }
     }
 }

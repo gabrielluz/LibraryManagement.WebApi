@@ -33,12 +33,11 @@ namespace LibraryManager.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var connectionString = Configuration.GetConnectionString("LibraryManagerApiConnection");
-            services.ConfigureDatabase(connectionString);
+            services.ConfigureDatabase(Configuration);
             services.ConfigureDependencyInjection();
             services.ConfigureMvc();
             services.ConfigureSwagger();
-            services.AddAutoMapper();
+            services.ConfigureAutoMapper();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

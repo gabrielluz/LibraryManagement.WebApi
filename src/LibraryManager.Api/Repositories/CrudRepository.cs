@@ -35,19 +35,22 @@ namespace LibraryManager.Api.Repositories
             return entity;
         }
 
-        public T Insert<T>(T entity) where T : class, IEntity
+        public T Insert<T>(T newEntity) where T : class, IEntity
         {
-            entity.Id = _databaseConnection.Insert<T>(entity);
-            return entity;
+            if (newEntity == null)
+                throw new ArgumentNullException(nameof(newEntity));
+
+            newEntity.Id = _databaseConnection.Insert<T>(newEntity);
+            return newEntity;
         }
 
-        public T Update<T>(long id, T entity) where T : class, IEntity 
+        public T Update<T>(T entity) where T : class, IEntity 
         {
-            if (!_databaseConnection.Update<T>(entity))
-                throw new EntityNotFoundException(typeof(T).Name, id);
-            
-            entity.Id = id;
-            return entity;
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            _databaseConnection.Update<T>(entity);
+            return Get<T>(entity.Id);
         }
 
         public void Delete<T>(long id) where T : class, IEntity
