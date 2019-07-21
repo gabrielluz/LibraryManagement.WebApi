@@ -52,6 +52,7 @@ namespace LibraryManager.Api.Repositories
 
         public void Delete<T>(long id) where T : class, IEntity
         {
+            Get<T>(id);
             _databaseConnection.Delete(Get<T>(id));
         }
     }
