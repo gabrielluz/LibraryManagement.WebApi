@@ -1,9 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 using LibraryManager.Api.Exceptions;
 using LibraryManager.Api.Models.Entities;
+using LibraryManager.Api.Models.Dto;
 using LibraryManager.Api.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
+using System.Linq;
+using System.Collections.ObjectModel;
 
 namespace LibraryManager.Api.Controllers
 {
@@ -12,35 +17,57 @@ namespace LibraryManager.Api.Controllers
     public class BooksController : ControllerBase
     {
         private readonly ICrudRepository _crudRepository;
+        private readonly IMapper _mapper;
 
-        public BooksController(ICrudRepository crudRepository) : base() 
+        public BooksController(ICrudRepository crudRepository, IMapper mapper) : base() 
         {
             _crudRepository = crudRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public ActionResult<Book> Get() => Ok(_crudRepository.GetAll<Book>());
+        public ActionResult<IEnumerable<BookOutputDto>> Get() 
+        {
+            var books = _crudRepository.GetAll<Book>();
+            var booksOutputDto = new Collection<BookOutputDto>();
+
+            foreach (var book in books ?? Enumerable.Empty<Book>())
+            {
+                var bookOutputDto = _mapper.Map<BookOutputDto>(book);
+                booksOutputDto.Add(bookOutputDto);
+            }
+
+            return Ok(booksOutputDto);
+        }
 
         [HttpGet("{id}")]
-        public ActionResult<Book> Get(long id) 
+        public ActionResult<BookOutputDto> Get(long id) 
         {
-            return Ok(_crudRepository.Get<Book>(id));
-        } 
+            var book = _crudRepository.Get<Book>(id);
+            var outputDto = _mapper.Map<BookOutputDto>(book);
+            return Ok(outputDto);
+        }
 
         [HttpPost]
-        public ActionResult<Book> Post([FromBody] Book Book)
+        public ActionResult<BookOutputDto> Post([FromBody] BookInputDto bookInputDto)
         {
-            return StatusCode(201 , _crudRepository.Insert(Book));
+            var bookToBeAdded = _mapper.Map<Book>(bookInputDto);
+            var bookAdded = _crudRepository.Insert(bookToBeAdded);
+            var bookAddedOutputDto = _mapper.Map<BookOutputDto>(bookAdded);
+            return StatusCode((int)HttpStatusCode.Created, bookAddedOutputDto);
         }
 
         [HttpPut("{id}")]
-        public ActionResult<Book> Put(long id, [FromBody] Book Book)
+        public ActionResult<BookOutputDto> Put(long id, [FromBody] BookInputDto bookInputDto)
         {
-            return Ok(_crudRepository.Update(id, Book));
+            var bookToUpdate = _mapper.Map<Book>(bookInputDto);
+            var updatedBook = _crudRepository.Update(id, bookToUpdate);
+            var updatedBookDto = _mapper.Map<BookOutputDto>(updatedBook);
+            return Ok(updatedBookDto);
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<Book> Delete(long id)
+        public IActionResult Delete(long id)
         {
             _crudRepository.Delete<Book>(id);
             return NoContent();
