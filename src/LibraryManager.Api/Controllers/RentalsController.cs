@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using AutoMapper;
 using LibraryManager.Api.Exceptions;
 using LibraryManager.Api.Models.Dto;
@@ -25,30 +26,53 @@ namespace LibraryManager.Api.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Rental>> Get() => Ok(_rentalRepository.GetAll());
+        public ActionResult<IEnumerable<RentalOutputDto>> Get()
+        {
+            var rentalList = _rentalRepository.GetAll();
+            var rentalOutputDtoList = new Collection<RentalOutputDto>();
+            
+            foreach (var rental in rentalList)
+            {
+                var rentalOutputDto = _mapper.Map<RentalOutputDto>(rental);
+                rentalOutputDtoList.Add(rentalOutputDto);
+            }
+
+            return Ok(rentalOutputDtoList);
+        }
 
         [HttpGet("{id}")]
-        public ActionResult<Rental> Get(long id) 
+        public ActionResult<RentalOutputDto> Get(long id) 
         {
-            return Ok(_rentalRepository.Get(id));
+            var rental = _rentalRepository.Get(id);
+            var rentalDto = _mapper.Map<RentalOutputDto>(rental);
+            return Ok(rentalDto);
         }
 
         [HttpPost]
-        public ActionResult<Rental> Post([FromBody] RentalInputDto dto)
+        public ActionResult<RentalOutputDto> Post([FromBody] AddRentalInputDto dto)
         {
-            var entity = _mapper.Map<Rental>(dto);
-            return StatusCode(201, _rentalRepository.Insert(entity));
+            var rental = _mapper.Map<Rental>(dto);
+            var insertedRental = _rentalRepository.Insert(rental);
+            var insertedRentalDto = _mapper.Map<RentalOutputDto>(insertedRental);
+
+            return StatusCode(201, insertedRentalDto);
         }
 
         [HttpPut("{id}")]
-        public ActionResult<Rental> Put(long id, [FromBody] RentalInputDto dto)
+        public ActionResult<RentalOutputDto> Put(long id, [FromBody] UpdateRentalInputDto updateRentalInputDto)
         {
-            var entity = _rentalRepository.Get(id);
-            return Ok(_rentalRepository.Update(entity));
+            var rental = _rentalRepository.Get(id);
+
+            rental.Returned = updateRentalInputDto.Returned;
+
+            var updatedRental = _rentalRepository.Update(rental);
+            var updatedRentalDto = _mapper.Map<RentalOutputDto>(updatedRental);
+
+            return Ok(updatedRentalDto);
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<Rental> Delete(long id)
+        public IActionResult Delete(long id)
         {
             _rentalRepository.Delete(id);
             return NoContent();

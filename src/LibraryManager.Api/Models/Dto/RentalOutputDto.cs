@@ -9,6 +9,6 @@ namespace LibraryManager.Api.Models.Dto
         public long UserId { get; set; }
         public long BookId { get; set; }
         public DateTime Issued { get; set; }
-        public DateTime Returned { get; set; }
+        public DateTime? Returned { get; set; }
     }
 }

@@ -34,10 +34,13 @@ namespace LibraryManager.Api.Repositories
 
             _crudRepository.Get<User>(review.User.Id);
             _crudRepository.Get<Book>(review.Book.Id);
+            
             var insertedId = 0;            
+            
             var sqlCommand = "INSERT INTO Review(Comment, Rate, UserId, BookId) "
                 + "VALUES (@Comment, @Rate, @UserId, @BookId);"
                 + "SELECT LAST_INSERT_ID();";
+
             var sqlParams = new 
             {
                 Comment = review.Comment,
@@ -45,11 +48,13 @@ namespace LibraryManager.Api.Repositories
                 UserId = review.User.Id,
                 BookId = review.Book.Id
             };
+
             using (var reader = _databaseProvider.GetConnection().ExecuteReader(sqlCommand, sqlParams))
             {
                 if (reader.Read())
                     insertedId = reader.GetInt32(0);
             }
+
             return Get(review.Book.Id, insertedId);
         }
 
@@ -105,7 +110,7 @@ namespace LibraryManager.Api.Repositories
                 
                 var query = @"SELECT *
                             FROM Review r 
-                            INNER JOIN User eu ON r.UserId = u.Id
+                            INNER JOIN User eu ON r.IdUser = u.Id
                             Where r.Id = @Id;";
                 
                 var review = _databaseProvider

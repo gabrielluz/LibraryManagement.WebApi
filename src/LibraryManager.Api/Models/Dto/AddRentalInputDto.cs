@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace LibraryManager.Api.Models.Dto
 {
-    public class RentalInputDto
+    public class AddRentalInputDto
     {
         [Required(ErrorMessage = "UserId is required.")]
         public long UserId { get; set; }
@@ -13,7 +13,5 @@ namespace LibraryManager.Api.Models.Dto
         
         [Required(ErrorMessage = "Issued date is required.")]
         public DateTime Issued { get; set; }
-        
-        public DateTime Returned { get; set; }
     }
 }
