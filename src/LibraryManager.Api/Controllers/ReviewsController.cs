@@ -49,22 +49,27 @@ namespace LibraryManager.Api.Controllers
         public ActionResult<ReviewOutputDto> Post(long bookId, [FromBody] ReviewInputDto reviewDto)
         {
             var review = _mapper.Map<ReviewInputDto, Review>(reviewDto);
+            
             review.User = _crudRepository.Get<User>(reviewDto.UserId);
             review.Book = _crudRepository.Get<Book>(bookId);
+            
             var insertedReview = _reviewsRepository.Insert(review);
             var insertedReviewDto = _mapper.Map<ReviewOutputDto>(insertedReview);
+            
             return StatusCode(201, insertedReviewDto);
         }
 
         [HttpPut("{bookId}/reviews/{reviewId}")]
-        public ActionResult<ReviewOutputDto> Put(long bookId, long reviewId, [FromBody] ReviewInputDto reviewDto)
+        public ActionResult<ReviewOutputDto> Put(long bookId, long reviewId, [FromBody] UpdateReviewDto reviewDto)
         {
-            _crudRepository.Get<Book>(bookId);
             var review = _reviewsRepository.Get(bookId, reviewId);
+            
             review.Rate = reviewDto.Rate;
             review.Comment = reviewDto.Comment;
+            
             var updatedReview = _reviewsRepository.Update(bookId, review);
             var updatedReviewDto = _mapper.Map<ReviewOutputDto>(review);
+            
             return Ok(updatedReviewDto);
         }
 

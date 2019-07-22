@@ -99,11 +99,13 @@ namespace LibraryManager.Api.Repositories
         {
             try 
             {
+                _crudRepository.Get<Book>(bookId);
+
                 var queryParameter = new { Id = id };
                 
                 var query = @"SELECT *
                             FROM Review r 
-                            INNER JOIN User u ON r.UserId = u.Id
+                            INNER JOIN User eu ON r.UserId = u.Id
                             Where r.Id = @Id;";
                 
                 var review = _databaseProvider

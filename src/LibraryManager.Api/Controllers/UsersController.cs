@@ -15,7 +15,6 @@ namespace LibraryManager.Api.Controllers
     public class UsersController : ControllerBase
     {
         private readonly ICrudRepository _crudRepository;
-
         public readonly IMapper _mapper;
 
         public UsersController(ICrudRepository crudRepository, IMapper mapper) : base() 
@@ -60,15 +59,9 @@ namespace LibraryManager.Api.Controllers
         public ActionResult<UserOutputDto> Put(long id, [FromBody] UserInputDto userInputDto)
         {
             var userToBeUpdated = _crudRepository.Get<User>(id);
-
-            userToBeUpdated.FirstName = userInputDto.FirstName;
-            userToBeUpdated.LastName = userInputDto.LastName;
-            userToBeUpdated.Email = userInputDto.Email;
-            userToBeUpdated.Description = userInputDto.Description;
-
             var userUpdated = _crudRepository.Update(userToBeUpdated);
             var userUpdatedDto = _mapper.Map<UserOutputDto>(userUpdated);
-            
+
             return Ok(userUpdatedDto);
         }
 
