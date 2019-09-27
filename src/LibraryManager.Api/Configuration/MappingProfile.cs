@@ -9,8 +9,8 @@ namespace LibraryManager.Api.Utils
         public MappingProfile()
         {
             CreateMap<ReviewInputDto, Review>()
+                .ForPath(e => e.User.Id, opt => opt.MapFrom(d => d.UserId))
                 .ForPath(e => e.Id, opt => opt.Ignore())
-                .ForPath(e => e.User, opt => opt.Ignore())
                 .ForPath(e => e.Book, opt => opt.Ignore());
 
             CreateMap<Review, ReviewOutputDto>()
