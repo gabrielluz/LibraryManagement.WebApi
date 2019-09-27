@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using src.Utils;
+using System;
+using System.Reflection;
 
 namespace LibraryManager.Api.Utils
 {
@@ -45,7 +47,7 @@ namespace LibraryManager.Api.Utils
 
         public static IServiceCollection ConfigureAutoMapper(this IServiceCollection services)
         {
-            services.AddAutoMapper();
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
             var mappingConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new MappingProfile());
