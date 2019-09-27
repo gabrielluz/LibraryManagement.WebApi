@@ -1,7 +1,7 @@
 using LibraryManager.Api.Exceptions;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace src.Utils
+namespace LibraryManager.Api.Filters
 {
     public class ExceptionFilter : ExceptionFilterAttribute
     {
