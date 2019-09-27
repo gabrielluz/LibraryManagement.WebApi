@@ -45,7 +45,7 @@ namespace LibraryManager.Api
         {
             app.UseHsts();
             app.UseMvc();
-            app.UseSwagger();
+            app.UseOpenApi();
             app.UseSwaggerUi3();
         }
     }
