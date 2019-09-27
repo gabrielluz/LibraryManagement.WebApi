@@ -1,13 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
-using System.Linq;
 using Dapper.Contrib.Extensions;
 using LibraryManager.Api.Exceptions;
 using LibraryManager.Api.Models.Entities;
 using Microsoft.Extensions.Configuration;
-using MySql.Data.MySqlClient;
+using System;
+using System.Collections.Generic;
+using System.Data;
 
 namespace LibraryManager.Api.Repositories
 {
@@ -25,13 +22,13 @@ namespace LibraryManager.Api.Repositories
             return _databaseConnection.GetAll<T>();
         }
 
-        public T Get<T>(long id) where T : class, IEntity 
+        public T Get<T>(long id) where T : class, IEntity
         {
             var entity = _databaseConnection.Get<T>(id);
 
             if (entity == null)
                 throw new EntityNotFoundException(typeof(T).Name, id);
-                
+
             return entity;
         }
 
@@ -44,7 +41,7 @@ namespace LibraryManager.Api.Repositories
             return newEntity;
         }
 
-        public T Update<T>(T entity) where T : class, IEntity 
+        public T Update<T>(T entity) where T : class, IEntity
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));

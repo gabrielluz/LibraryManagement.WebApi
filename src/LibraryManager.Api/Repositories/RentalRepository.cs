@@ -1,13 +1,9 @@
+using Dapper;
+using LibraryManager.Api.Exceptions;
+using LibraryManager.Api.Models.Entities;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
-using Dapper;
-using Dapper.Contrib.Extensions;
-using LibraryManager.Api.Exceptions;
-using LibraryManager.Api.Models.Dto;
-using LibraryManager.Api.Models.Entities;
-using Microsoft.Extensions.Configuration;
 
 namespace LibraryManager.Api.Repositories
 {
@@ -23,7 +19,7 @@ namespace LibraryManager.Api.Repositories
             _databaseProvider = databaseProvider;
         }
 
-        public Rental Insert(Rental rental) 
+        public Rental Insert(Rental rental)
         {
             if (rental == null)
                 throw new ArgumentNullException(nameof(rental));
@@ -32,14 +28,15 @@ namespace LibraryManager.Api.Repositories
             _crudRepository.Get<Book>(rental.Book?.Id ?? 0);
 
             string sql = "INSERT INTO Rental(IdUser, IdBook, Issued) "
-                    + "VALUES(@UserId, @BookId, @Issued);" 
+                    + "VALUES(@UserId, @BookId, @Issued);"
                     + "SELECT LAST_INSERT_ID();";
-            
-            var sqlParams = new {
-                    UserId = rental.User.Id,
-                    BookId = rental.Book.Id,
-                    Issued = DateTime.Now
-                };
+
+            var sqlParams = new
+            {
+                UserId = rental.User.Id,
+                BookId = rental.Book.Id,
+                Issued = DateTime.Now
+            };
 
             long insertedId = 0;
 
@@ -52,7 +49,7 @@ namespace LibraryManager.Api.Repositories
             return Get(insertedId);
         }
 
-        public Rental Update(Rental rental) 
+        public Rental Update(Rental rental)
         {
             var sql = "UPDATE Rental SET Returned = @Returned WHERE Id = @Id;";
             var conn = _databaseProvider.GetConnection();
@@ -60,13 +57,13 @@ namespace LibraryManager.Api.Repositories
             return Get(rental.Id);
         }
 
-        public IEnumerable<Rental> GetAll() 
+        public IEnumerable<Rental> GetAll()
         {
             var query = @"SELECT *
                             FROM Rental r 
                             INNER JOIN User u ON r.IdUser = u.Id
                             INNER JOIN Book b ON r.IdBook = b.Id;";
-            
+
             var rentalList = _databaseProvider
                 .GetConnection()
                 .Query<Rental, User, Book, Rental>(query, IncludeUserAndBook)
@@ -75,7 +72,7 @@ namespace LibraryManager.Api.Repositories
             return rentalList;
         }
 
-        public Rental Get(long id) 
+        public Rental Get(long id)
         {
             var queryParameter = new { Id = id };
 
@@ -84,10 +81,10 @@ namespace LibraryManager.Api.Repositories
                             INNER JOIN User u ON r.IdUser = u.Id
                             INNER JOIN Book b ON r.IdBook = b.Id
                             Where r.Id = @Id;";
-            
+
             var rental = _databaseProvider
                 .GetConnection()
-                .Query<Rental, User, Book,Rental>(query, IncludeUserAndBook, queryParameter)
+                .Query<Rental, User, Book, Rental>(query, IncludeUserAndBook, queryParameter)
                 .FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Rental), id);
 
             return rental;
@@ -100,7 +97,7 @@ namespace LibraryManager.Api.Repositories
 
             return rental;
         }
-        public void Delete(long id) 
+        public void Delete(long id)
         {
             _crudRepository.Delete<Rental>(id);
         }

@@ -1,13 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using Dapper;
-using Dapper.Contrib.Extensions;
-using LibraryManager.Api.Exceptions;
-using LibraryManager.Api.Models.Dto;
 using LibraryManager.Api.Models.Entities;
-using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 
 namespace LibraryManager.Api.Repositories
 {

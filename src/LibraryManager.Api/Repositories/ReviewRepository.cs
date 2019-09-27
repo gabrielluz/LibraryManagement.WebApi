@@ -1,16 +1,10 @@
+using Dapper;
+using LibraryManager.Api.Exceptions;
+using LibraryManager.Api.Models.Entities;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using Dapper;
-using Dapper.Contrib.Extensions;
-using LibraryManager.Api.Exceptions;
-using LibraryManager.Api.Models.Dto;
-using LibraryManager.Api.Models.Entities;
-using Microsoft.Extensions.Configuration;
-using MySql.Data.MySqlClient;
 
 namespace LibraryManager.Api.Repositories
 {
@@ -34,17 +28,17 @@ namespace LibraryManager.Api.Repositories
 
             _crudRepository.Get<User>(review.User.Id);
             _crudRepository.Get<Book>(review.Book.Id);
-            
-            var insertedId = 0;            
-            
+
+            var insertedId = 0;
+
             var sqlCommand = "INSERT INTO Review(Comment, Rate, UserId, BookId) "
                 + "VALUES (@Comment, @Rate, @UserId, @BookId);"
                 + "SELECT LAST_INSERT_ID();";
 
-            var sqlParams = new 
+            var sqlParams = new
             {
-                Comment = review.Comment,
-                Rate = review.Rate,
+                review.Comment,
+                review.Rate,
                 UserId = review.User.Id,
                 BookId = review.Book.Id
             };
@@ -58,20 +52,21 @@ namespace LibraryManager.Api.Repositories
             return Get(review.Book.Id, insertedId);
         }
 
-        public Review Update(long bookId, Review review) 
+        public Review Update(long bookId, Review review)
         {
             var sql = "UPDATE Review SET Comment = @Comment, Rate = @Rate WHERE Id = @Id AND BookId = @BookId;";
-            var sqlParameters = new {
-                Comment = review.Comment,
-                Rate = review.Rate,
-                Id = review.Id,
-                bookId = bookId
+            var sqlParameters = new
+            {
+                review.Comment,
+                review.Rate,
+                review.Id,
+                bookId
             };
             _databaseProvider.GetConnection().Execute(sql, sqlParameters);
             return Get(bookId, review.Id);
         }
 
-        public IEnumerable<Review> GetAll(long bookId) 
+        public IEnumerable<Review> GetAll(long bookId)
         {
             try
             {
@@ -81,17 +76,18 @@ namespace LibraryManager.Api.Repositories
                             INNER JOIN Book b ON r.BookId = b.Id
                             WHERE BookId = @BookId
                             ORDER BY r.Id;";
-                
+
                 var reviews = _databaseProvider.GetConnection()
                     .Query<Review, User, Book, Review>(
-                        sql, 
-                        (review, user, book) => {
+                        sql,
+                        (review, user, book) =>
+                        {
                             review.User = user;
                             review.Book = book;
                             return review;
                         },
                         new { BookId = bookId });
-                
+
                 return reviews;
             }
             catch (SqlException ex)
@@ -100,23 +96,23 @@ namespace LibraryManager.Api.Repositories
             }
         }
 
-        public Review Get(long bookId, long id) 
+        public Review Get(long bookId, long reviewId)
         {
-            try 
+            try
             {
                 _crudRepository.Get<Book>(bookId);
 
-                var queryParameter = new { Id = id };
-                
+                var queryParameter = new { Id = reviewId };
+
                 var query = @"SELECT *
                             FROM Review r 
                             INNER JOIN User eu ON r.IdUser = u.Id
                             Where r.Id = @Id;";
-                
+
                 var review = _databaseProvider
                     .GetConnection()
                     .Query<Review, User, Review>(query, IncludeUser, queryParameter)
-                    .FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Review), id);
+                    .FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Review), reviewId);
 
                 return review;
             }
