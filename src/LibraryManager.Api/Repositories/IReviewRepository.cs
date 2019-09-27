@@ -9,6 +9,6 @@ namespace LibraryManager.Api.Repositories
         Review Update(long bookId, Review review);
         IEnumerable<Review> GetAll(long bookId);
         Review Get(long bookId, long reviewId);
-        void Delete(long id);
+        void Delete(long bookId, long reviewId);
     }
 }

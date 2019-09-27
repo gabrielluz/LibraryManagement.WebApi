@@ -54,6 +54,7 @@ namespace LibraryManager.Api.Repositories
 
         public Review Update(long bookId, Review review)
         {
+            _crudRepository.Get<Book>(bookId);
             var sql = "UPDATE Review SET Comment = @Comment, Rate = @Rate WHERE Id = @Id AND BookId = @BookId;";
             var sqlParameters = new
             {
@@ -68,6 +69,7 @@ namespace LibraryManager.Api.Repositories
 
         public IEnumerable<Review> GetAll(long bookId)
         {
+            _crudRepository.Get<Book>(bookId);
             try
             {
                 string sql = @"SELECT * 
@@ -106,7 +108,7 @@ namespace LibraryManager.Api.Repositories
 
                 var query = @"SELECT *
                             FROM Review r 
-                            INNER JOIN User eu ON r.IdUser = u.Id
+                            INNER JOIN User u ON r.UserId = u.Id
                             Where r.Id = @Id;";
 
                 var review = _databaseProvider
@@ -122,7 +124,11 @@ namespace LibraryManager.Api.Repositories
             }
         }
 
-        public void Delete(long id) => _crudRepository.Delete<Review>(id);
+        public void Delete(long bookId, long id)
+        {
+            _crudRepository.Get<Book>(bookId);
+            _crudRepository.Delete<Review>(id);
+        }
 
         private Review IncludeUser(Review review, User user)
         {

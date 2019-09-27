@@ -11,13 +11,11 @@ namespace LibraryManager.Api.Controllers
     public class ReviewsController : ControllerBase
     {
         private readonly IReviewRepository _reviewsRepository;
-        private readonly ICrudRepository _crudRepository;
         private readonly IMapper _mapper;
 
-        public ReviewsController(IReviewRepository reviewRepository, ICrudRepository crudRepository, IMapper mapper) : base()
+        public ReviewsController(IReviewRepository reviewRepository, IMapper mapper) : base()
         {
             _reviewsRepository = reviewRepository;
-            _crudRepository = crudRepository;
             _mapper = mapper;
         }
 
@@ -25,7 +23,6 @@ namespace LibraryManager.Api.Controllers
         [Route("{bookId}/reviews")]
         public ActionResult<IEnumerable<ReviewOutputDto>> Get(long bookId)
         {
-            _crudRepository.Get<Book>(bookId);
             var reviews = _reviewsRepository.GetAll(bookId);
             var reviewsOutputDto = _mapper.Map<IEnumerable<ReviewOutputDto>>(reviews);
             return Ok(reviewsOutputDto);
@@ -34,7 +31,6 @@ namespace LibraryManager.Api.Controllers
         [HttpGet("{bookId}/reviews/{reviewId}")]
         public ActionResult<ReviewOutputDto> Get(long bookId, long reviewId)
         {
-            _crudRepository.Get<Book>(bookId);
             var review = _reviewsRepository.Get(bookId, reviewId);
             var reviewDto = _mapper.Map<ReviewOutputDto>(review);
             return Ok(reviewDto);
@@ -45,9 +41,9 @@ namespace LibraryManager.Api.Controllers
         public ActionResult<ReviewOutputDto> Post(long bookId, [FromBody] ReviewInputDto reviewDto)
         {
             var review = _mapper.Map<ReviewInputDto, Review>(reviewDto);
-
-            review.User = _crudRepository.Get<User>(reviewDto.UserId);
-            review.Book = _crudRepository.Get<Book>(bookId);
+            
+            review.User = new User { Id = reviewDto.UserId };
+            review.Book = new Book { Id = bookId };
 
             var insertedReview = _reviewsRepository.Insert(review);
             var insertedReviewDto = _mapper.Map<ReviewOutputDto>(insertedReview);
@@ -72,8 +68,7 @@ namespace LibraryManager.Api.Controllers
         [HttpDelete("{bookId}/reviews/{reviewId}")]
         public IActionResult Delete(long bookId, long reviewId)
         {
-            _crudRepository.Get<Book>(bookId);
-            _reviewsRepository.Delete(reviewId);
+            _reviewsRepository.Delete(bookId, reviewId);
             return NoContent();
         }
     }
