@@ -5,8 +5,6 @@ using LibraryManager.Api.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using src.Utils;
-using System;
 using System.Reflection;
 
 namespace LibraryManager.Api.Utils
@@ -18,7 +16,7 @@ namespace LibraryManager.Api.Utils
             var connectionString = configuration.GetConnectionString("LibraryManagerApiConnection");
 
             services.AddScoped<IDatabaseProvider, MysqlDatabaseProvider>(db => new MysqlDatabaseProvider(connectionString));
-            
+
             return services;
         }
 
@@ -34,14 +32,14 @@ namespace LibraryManager.Api.Utils
         public static IServiceCollection ConfigureMvc(this IServiceCollection services)
         {
             services.Configure<ApiBehaviorOptions>(config => config.SuppressModelStateInvalidFilter = true);
-            services.AddMvc(opt => 
+            services.AddMvc(opt =>
             {
                 opt.Filters.Add(typeof(ExceptionFilter));
                 opt.Filters.Add(typeof(ValidationActionFilter));
             })
             .AddXmlSerializerFormatters()
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            
+
             return services;
         }
 
@@ -54,7 +52,7 @@ namespace LibraryManager.Api.Utils
             });
 
             mappingConfig.AssertConfigurationIsValid();
-            
+
             var mapper = mappingConfig.CreateMapper();
             services.AddSingleton(mapper);
             return services;
@@ -62,7 +60,7 @@ namespace LibraryManager.Api.Utils
 
         public static IServiceCollection ConfigureSwagger(this IServiceCollection services)
         {
-            return services.AddSwaggerDocument(sc => 
+            return services.AddSwaggerDocument(sc =>
             {
                 sc.Title = "Library Management API";
                 sc.DocumentName = "Library Management API Documentation";
