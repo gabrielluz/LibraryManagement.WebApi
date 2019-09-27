@@ -29,14 +29,7 @@ namespace LibraryManager.Api.Controllers
         public ActionResult<IEnumerable<BookOutputDto>> Get() 
         {
             var books = _crudRepository.GetAll<Book>();
-            var booksOutputDto = new Collection<BookOutputDto>();
-
-            foreach (var book in books)
-            {
-                var bookOutputDto = _mapper.Map<BookOutputDto>(book);
-                booksOutputDto.Add(bookOutputDto);
-            }
-
+            var booksOutputDto = _mapper.Map<IEnumerable<BookOutputDto>>(books);
             return Ok(booksOutputDto);
         }
 

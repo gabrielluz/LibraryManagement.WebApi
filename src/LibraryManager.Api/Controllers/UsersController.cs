@@ -1,12 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using AutoMapper;
-using LibraryManager.Api.Exceptions;
 using LibraryManager.Api.Models.Dto;
 using LibraryManager.Api.Models.Entities;
 using LibraryManager.Api.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace LibraryManager.Api.Controllers
 {
@@ -17,24 +14,17 @@ namespace LibraryManager.Api.Controllers
         private readonly ICrudRepository _crudRepository;
         public readonly IMapper _mapper;
 
-        public UsersController(ICrudRepository crudRepository, IMapper mapper) : base() 
+        public UsersController(ICrudRepository crudRepository, IMapper mapper) : base()
         {
             _crudRepository = crudRepository;
             _mapper = mapper;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<UserOutputDto>> Get() 
+        public ActionResult<IEnumerable<UserOutputDto>> Get()
         {
             var users = _crudRepository.GetAll<User>();
-            var usersOutput = new Collection<UserOutputDto>();
-
-            foreach (var user in users)
-            {
-                var userDto = _mapper.Map<UserOutputDto>(user);
-                usersOutput.Add(userDto);
-            }
-
+            var usersOutput = _mapper.Map<IEnumerable<UserOutputDto>>(users);
             return Ok(usersOutput);
         }
 
@@ -61,7 +51,6 @@ namespace LibraryManager.Api.Controllers
             var userToBeUpdated = _crudRepository.Get<User>(id);
             var userUpdated = _crudRepository.Update(userToBeUpdated);
             var userUpdatedDto = _mapper.Map<UserOutputDto>(userUpdated);
-
             return Ok(userUpdatedDto);
         }
 

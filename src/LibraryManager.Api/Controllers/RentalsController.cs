@@ -1,12 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using AutoMapper;
-using LibraryManager.Api.Exceptions;
 using LibraryManager.Api.Models.Dto;
 using LibraryManager.Api.Models.Entities;
 using LibraryManager.Api.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace LibraryManager.Api.Controllers
 {
@@ -19,7 +16,7 @@ namespace LibraryManager.Api.Controllers
 
         public RentalsController(
             IRentalRepository rentalRepository,
-            IMapper mapper) : base() 
+            IMapper mapper) : base()
         {
             _rentalRepository = rentalRepository;
             _mapper = mapper;
@@ -29,19 +26,12 @@ namespace LibraryManager.Api.Controllers
         public ActionResult<IEnumerable<RentalOutputDto>> Get()
         {
             var rentalList = _rentalRepository.GetAll();
-            var rentalOutputDtoList = new Collection<RentalOutputDto>();
-            
-            foreach (var rental in rentalList)
-            {
-                var rentalOutputDto = _mapper.Map<RentalOutputDto>(rental);
-                rentalOutputDtoList.Add(rentalOutputDto);
-            }
-
+            var rentalOutputDtoList = _mapper.Map<IEnumerable<RentalOutputDto>>(rentalList);
             return Ok(rentalOutputDtoList);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<RentalOutputDto> Get(long id) 
+        public ActionResult<RentalOutputDto> Get(long id)
         {
             var rental = _rentalRepository.Get(id);
             var rentalDto = _mapper.Map<RentalOutputDto>(rental);
@@ -54,7 +44,6 @@ namespace LibraryManager.Api.Controllers
             var rental = _mapper.Map<Rental>(dto);
             var insertedRental = _rentalRepository.Insert(rental);
             var insertedRentalDto = _mapper.Map<RentalOutputDto>(insertedRental);
-
             return StatusCode(201, insertedRentalDto);
         }
 
@@ -62,12 +51,9 @@ namespace LibraryManager.Api.Controllers
         public ActionResult<RentalOutputDto> Put(long id, [FromBody] UpdateRentalInputDto updateRentalInputDto)
         {
             var rental = _rentalRepository.Get(id);
-
             rental.Returned = updateRentalInputDto.Returned;
-
             var updatedRental = _rentalRepository.Update(rental);
             var updatedRentalDto = _mapper.Map<RentalOutputDto>(updatedRental);
-
             return Ok(updatedRentalDto);
         }
 
