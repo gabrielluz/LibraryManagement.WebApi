@@ -1,6 +1,7 @@
 language: csharp
 solution: ./src/LibraryManager.sln
-dotnet: 2.2.13
+dotnet: 2.2
+dist: xenial
 script:
   - dotnet test src/LibraryManager.Tests/
   - dotnet publish src/LibraryManager.Api/
