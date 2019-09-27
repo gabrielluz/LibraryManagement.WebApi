@@ -1,6 +1,6 @@
 language: csharp
 solution: ./src/LibraryManager.sln
-dotnet: 2.1.401
+dotnet: 2.2.13
 script:
   - dotnet test src/LibraryManager.Tests/
   - dotnet publish src/LibraryManager.Api/
