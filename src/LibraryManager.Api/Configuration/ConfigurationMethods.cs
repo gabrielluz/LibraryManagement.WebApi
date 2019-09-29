@@ -5,6 +5,7 @@ using LibraryManager.Api.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Reflection;
 
 namespace LibraryManager.Api.Utils
@@ -15,6 +16,9 @@ namespace LibraryManager.Api.Utils
         {
             var connectionString = configuration.GetConnectionString("LibraryManagerApiConnection");
 
+            if (connectionString == null)
+                throw new ApplicationException("Connection string \"LibraryManagerApiConnection\" found.");
+            
             services.AddScoped<IDatabaseProvider, MysqlDatabaseProvider>(db => new MysqlDatabaseProvider(connectionString));
 
             return services;
