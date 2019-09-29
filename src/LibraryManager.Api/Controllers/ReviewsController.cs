@@ -41,7 +41,7 @@ namespace LibraryManager.Api.Controllers
         public ActionResult<ReviewOutputDto> Post(long bookId, [FromBody] ReviewInputDto reviewDto)
         {
             var review = _mapper.Map<ReviewInputDto, Review>(reviewDto);
-            
+
             review.User = new User { Id = reviewDto.UserId };
             review.Book = new Book { Id = bookId };
 

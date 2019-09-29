@@ -9,7 +9,7 @@ namespace LibraryManager.Api.Exceptions
         {
             Errors = errors;
         }
-        
-        public IEnumerable<string> Errors { get; }    
+
+        public IEnumerable<string> Errors { get; }
     }
 }

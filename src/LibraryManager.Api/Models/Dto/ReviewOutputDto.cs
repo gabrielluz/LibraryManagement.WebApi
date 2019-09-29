@@ -1,6 +1,3 @@
-using System;
-using LibraryManager.Api.Models.Entities;
-
 namespace LibraryManager.Api.Models.Dto
 {
     public class ReviewOutputDto

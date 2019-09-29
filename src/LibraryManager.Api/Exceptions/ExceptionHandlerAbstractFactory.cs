@@ -4,7 +4,7 @@ namespace LibraryManager.Api.Exceptions
 {
     public class ExceptionHandlerAbstractFactory
     {
-        public IExceptionHandler Build(Exception exception) 
+        public IExceptionHandler Build(Exception exception)
         {
             switch (exception)
             {

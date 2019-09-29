@@ -8,7 +8,7 @@ namespace LibraryManager.Api.Models.Dto
         {
             this.Errors = errors;
         }
-        
-        public IEnumerable<string> Errors { get; set; }        
+
+        public IEnumerable<string> Errors { get; set; }
     }
 }

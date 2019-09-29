@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using Dapper.Contrib.Extensions;
 
 namespace LibraryManager.Api.Models.Entities

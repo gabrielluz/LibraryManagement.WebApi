@@ -1,10 +1,7 @@
+using LibraryManager.Api.Exceptions;
+using Microsoft.AspNetCore.Mvc.Filters;
 using System.Collections.Generic;
 using System.Linq;
-using LibraryManager.Api.Exceptions;
-using LibraryManager.Api.Models.Dto;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Newtonsoft.Json;
 
 namespace LibraryManager.Api.Filters
 {

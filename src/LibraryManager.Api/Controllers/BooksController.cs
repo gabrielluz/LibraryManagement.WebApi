@@ -1,14 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Net;
-using LibraryManager.Api.Exceptions;
-using LibraryManager.Api.Models.Entities;
+using AutoMapper;
 using LibraryManager.Api.Models.Dto;
+using LibraryManager.Api.Models.Entities;
 using LibraryManager.Api.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using AutoMapper;
-using System.Linq;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
+using System.Net;
 
 namespace LibraryManager.Api.Controllers
 {
@@ -19,14 +15,14 @@ namespace LibraryManager.Api.Controllers
         private readonly ICrudRepository _crudRepository;
         private readonly IMapper _mapper;
 
-        public BooksController(ICrudRepository crudRepository, IMapper mapper) : base() 
+        public BooksController(ICrudRepository crudRepository, IMapper mapper) : base()
         {
             _crudRepository = crudRepository;
             _mapper = mapper;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<BookOutputDto>> Get() 
+        public ActionResult<IEnumerable<BookOutputDto>> Get()
         {
             var books = _crudRepository.GetAll<Book>();
             var booksOutputDto = _mapper.Map<IEnumerable<BookOutputDto>>(books);
@@ -34,7 +30,7 @@ namespace LibraryManager.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<BookOutputDto> Get(long id) 
+        public ActionResult<BookOutputDto> Get(long id)
         {
             var book = _crudRepository.Get<Book>(id);
             var outputDto = _mapper.Map<BookOutputDto>(book);
