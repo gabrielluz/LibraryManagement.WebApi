@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace LibraryManager.Api.Exceptions
+namespace LibraryManager.Api.Exceptions.Handlers
 {
     public interface IExceptionHandler
     {

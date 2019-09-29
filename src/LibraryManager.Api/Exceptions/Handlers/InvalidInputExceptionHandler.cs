@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 
-namespace LibraryManager.Api.Exceptions
+namespace LibraryManager.Api.Exceptions.Handlers
 {
     public class InvalidInputExceptionHandler : BaseExceptionHandler
     {

@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Threading.Tasks;
 
-namespace LibraryManager.Api.Exceptions
+namespace LibraryManager.Api.Exceptions.Handlers
 {
     internal class GenericExceptionHandler : BaseExceptionHandler
     {

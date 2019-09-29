@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
-namespace LibraryManager.Api.Exceptions
+namespace LibraryManager.Api.Exceptions.Handlers
 {
     public abstract class BaseExceptionHandler : IExceptionHandler
     {

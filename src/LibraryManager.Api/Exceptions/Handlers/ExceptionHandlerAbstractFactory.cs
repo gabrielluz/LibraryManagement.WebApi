@@ -1,6 +1,6 @@
 using System;
 
-namespace LibraryManager.Api.Exceptions
+namespace LibraryManager.Api.Exceptions.Handlers
 {
     public class ExceptionHandlerAbstractFactory
     {

@@ -1,4 +1,4 @@
-using LibraryManager.Api.Exceptions;
+using LibraryManager.Api.Exceptions.Handlers;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace LibraryManager.Api.Filters

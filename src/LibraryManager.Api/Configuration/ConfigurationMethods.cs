@@ -1,5 +1,5 @@
 using AutoMapper;
-using LibraryManager.Api.Exceptions;
+using LibraryManager.Api.Exceptions.Handlers;
 using LibraryManager.Api.Filters;
 using LibraryManager.Api.Repositories;
 using Microsoft.AspNetCore.Mvc;
