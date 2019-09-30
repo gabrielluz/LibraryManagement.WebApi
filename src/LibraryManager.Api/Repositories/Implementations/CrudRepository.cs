@@ -12,26 +12,30 @@ namespace LibraryManager.Api.Repositories.Implementations
 {
     public class CrudRepository : ICrudRepository
     {
-        private readonly IDbConnection _databaseConnection;
+        private readonly IDatabaseProvider _databaseProvider;
 
         public CrudRepository(IDatabaseProvider databaseProvider)
         {
-            _databaseConnection = databaseProvider.GetConnection();
+            _databaseProvider = databaseProvider;
         }
 
         public IEnumerable<T> GetAll<T>() where T : class, IEntity
         {
-            return _databaseConnection.GetAll<T>();
+            using (var connection = _databaseProvider.GetConnection())
+                return connection.GetAll<T>();
         }
 
         public T Get<T>(long id) where T : class, IEntity
         {
-            var entity = _databaseConnection.Get<T>(id);
+            using (var connection = _databaseProvider.GetConnection())
+            {
+                var entity = connection.Get<T>(id);
 
-            if (entity == null)
-                throw new EntityNotFoundException(typeof(T).Name, id);
+                if (entity == null)
+                    throw new EntityNotFoundException(typeof(T).Name, id);
 
-            return entity;
+                return entity;
+            }
         }
 
         public T Insert<T>(T newEntity) where T : class, IEntity
@@ -39,8 +43,11 @@ namespace LibraryManager.Api.Repositories.Implementations
             if (newEntity == null)
                 throw new ArgumentNullException(nameof(newEntity));
 
-            newEntity.Id = _databaseConnection.Insert<T>(newEntity);
-            return newEntity;
+            using (var connection = _databaseProvider.GetConnection())
+            {
+                newEntity.Id = connection.Insert<T>(newEntity);
+                return newEntity;
+            }
         }
 
         public T Update<T>(T entity) where T : class, IEntity
@@ -48,14 +55,18 @@ namespace LibraryManager.Api.Repositories.Implementations
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            _databaseConnection.Update<T>(entity);
+            using (var connection = _databaseProvider.GetConnection())
+                connection.Update(entity);
+            
             return Get<T>(entity.Id);
         }
 
         public void Delete<T>(long id) where T : class, IEntity
         {
             Get<T>(id);
-            _databaseConnection.Delete(Get<T>(id));
+
+            using (var connection = _databaseProvider.GetConnection())
+                connection.Delete(Get<T>(id));
         }
     }
 }

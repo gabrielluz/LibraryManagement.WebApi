@@ -73,7 +73,8 @@ namespace LibraryManager.Api.Repositories.Implementations
         public IEnumerable<Review> GetAllPaginated(long bookId, Pagination paginationFilter)
         {
             _crudRepository.Get<Book>(bookId);
-            try
+            
+            using (var connection = _databaseProvider.GetConnection())
             {
                 var parameters = new
                 {
@@ -81,57 +82,48 @@ namespace LibraryManager.Api.Repositories.Implementations
                     OffSet = paginationFilter.CalculateOffSet(),
                     BookId = bookId
                 };
+                
                 string sql = @"SELECT * 
-                            FROM Review r 
-                            INNER JOIN User u ON r.UserId = u.Id
-                            INNER JOIN Book b ON r.BookId = b.Id
-                            WHERE BookId = @BookId
-                            ORDER BY r.Id
-                            LIMIT @Limit
-                            OFFSET @OffSet;";
+                        FROM Review r 
+                        INNER JOIN User u ON r.UserId = u.Id
+                        INNER JOIN Book b ON r.BookId = b.Id
+                        WHERE BookId = @BookId
+                        ORDER BY r.Id
+                        LIMIT @Limit
+                        OFFSET @OffSet;";
 
-                var reviews = _databaseProvider.GetConnection()
-                    .Query<Review, User, Book, Review>(
-                        sql,
-                        (review, user, book) =>
-                        {
-                            review.User = user;
-                            review.Book = book;
-                            return review;
-                        },
-                        parameters);
+                var reviews = connection.Query<Review, User, Book, Review>(
+                    sql,
+                    (review, user, book) =>
+                    {
+                        review.User = user;
+                        review.Book = book;
+                        return review;
+                    },
+                    parameters);
 
                 return reviews;
-            }
-            catch (SqlException ex)
-            {
-                throw new Exception($"Error while reading Reviews from database for book id { bookId }.", ex);
             }
         }
 
         public Review Get(long bookId, long reviewId)
         {
-            try
-            {
-                _crudRepository.Get<Book>(bookId);
+            _crudRepository.Get<Book>(bookId);
 
+            using (var connection = _databaseProvider.GetConnection())
+            {
                 var queryParameter = new { Id = reviewId };
 
                 var query = @"SELECT *
-                            FROM Review r 
-                            INNER JOIN User u ON r.UserId = u.Id
-                            Where r.Id = @Id;";
+                        FROM Review r 
+                        INNER JOIN User u ON r.UserId = u.Id
+                        Where r.Id = @Id;";
 
-                var review = _databaseProvider
-                    .GetConnection()
+                var review = connection
                     .Query<Review, User, Review>(query, IncludeUser, queryParameter)
                     .FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Review), reviewId);
 
                 return review;
-            }
-            catch (SqlException ex)
-            {
-                throw new Exception("Error while reading Review from database.", ex);
             }
         }
 

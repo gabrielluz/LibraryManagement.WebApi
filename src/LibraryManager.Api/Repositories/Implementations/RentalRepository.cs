@@ -43,8 +43,10 @@ namespace LibraryManager.Api.Repositories.Implementations
 
             long insertedId = 0;
 
-            using (var reader = _databaseProvider.GetConnection().ExecuteReader(sql, sqlParams))
+            using (var connection = _databaseProvider.GetConnection())
             {
+                var reader = connection.ExecuteReader(sql, sqlParams);
+
                 if (reader.Read())
                     insertedId = reader.GetInt32(0);
             }
@@ -54,77 +56,85 @@ namespace LibraryManager.Api.Repositories.Implementations
 
         public Rental Update(Rental rental)
         {
-            var sql = "UPDATE Rental SET Returned = @Returned WHERE Id = @Id;";
-            var conn = _databaseProvider.GetConnection();
-            conn.Execute(sql, new { rental.Returned, rental.Id });
-            return Get(rental.Id);
+            using (var conn = _databaseProvider.GetConnection())
+            {
+                var sql = "UPDATE Rental SET Returned = @Returned WHERE Id = @Id;";
+                conn.Execute(sql, new { rental.Returned, rental.Id });
+                return Get(rental.Id);
+            }
         }
 
         public IEnumerable<Rental> GetAll()
         {
-            var query = @"SELECT *
+            using (var connection = _databaseProvider.GetConnection())
+            {
+                var query = @"SELECT *
                             FROM Rental r 
                             INNER JOIN User u ON r.IdUser = u.Id
                             INNER JOIN Book b ON r.IdBook = b.Id;";
 
-            var rentalList = _databaseProvider
-                .GetConnection()
-                .Query<Rental, User, Book, Rental>(query, IncludeUserAndBook)
-                .ToList();
+                var rentalList = connection
+                    .Query(query, (Func<Rental, User, Book, Rental>)IncludeUserAndBook)
+                    .ToList();
 
-            return rentalList;
+                return rentalList;
+            }
         }
 
         public IEnumerable<Rental> GetAllPaginated(Pagination paginationFilter)
         {
-            var parameters = new 
+            using (var connection = _databaseProvider.GetConnection())
             {
-                Limit = paginationFilter.Limit,
-                OffSet = paginationFilter.CalculateOffSet()
-            };
-            var query = @"SELECT *
+                var parameters = new
+                {
+                    Limit = paginationFilter.Limit,
+                    OffSet = paginationFilter.CalculateOffSet()
+                };
+                var query = @"SELECT *
                             FROM Rental r 
                             INNER JOIN User u ON r.IdUser = u.Id
                             INNER JOIN Book b ON r.IdBook = b.Id
                             LIMIT @Limit
                             OFFSET @OffSet;";
 
-            var rentalList = _databaseProvider
-                .GetConnection()
-                .Query<Rental, User, Book, Rental>(query, IncludeUserAndBook, parameters)
-                .ToList();
+                var rentalList = connection
+                    .Query(query, (Func<Rental, User, Book, Rental>)IncludeUserAndBook, parameters)
+                    .ToList();
 
-            return rentalList;
+                return rentalList;
+            }
         }
 
         public Rental Get(long id)
         {
-            var queryParameter = new { Id = id };
+            using (var connection = _databaseProvider.GetConnection())
+            {
+                var queryParameter = new { Id = id };
 
-            var query = @"SELECT *
+                var query = @"SELECT *
                             FROM Rental r 
                             INNER JOIN User u ON r.IdUser = u.Id
                             INNER JOIN Book b ON r.IdBook = b.Id
                             Where r.Id = @Id;";
 
-            var rental = _databaseProvider
-                .GetConnection()
-                .Query<Rental, User, Book, Rental>(query, IncludeUserAndBook, queryParameter)
-                .FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Rental), id);
+                var rental = connection
+                    .Query(query, (Func<Rental, User, Book, Rental>)IncludeUserAndBook, queryParameter)
+                    .FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Rental), id);
 
-            return rental;
+                return rental;
+            }
+        }
+
+        public void Delete(long id)
+        {
+            _crudRepository.Delete<Rental>(id);
         }
 
         private Rental IncludeUserAndBook(Rental rental, User user, Book book)
         {
             rental.User = user;
             rental.Book = book;
-
             return rental;
-        }
-        public void Delete(long id)
-        {
-            _crudRepository.Delete<Rental>(id);
         }
     }
 }
