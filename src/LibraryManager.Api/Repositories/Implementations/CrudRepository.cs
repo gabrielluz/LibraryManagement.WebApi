@@ -28,14 +28,7 @@ namespace LibraryManager.Api.Repositories.Implementations
         public T Get<T>(long id) where T : class, IEntity
         {
             using (var connection = _databaseProvider.GetConnection())
-            {
-                var entity = connection.Get<T>(id);
-
-                if (entity == null)
-                    throw new EntityNotFoundException(typeof(T).Name, id);
-
-                return entity;
-            }
+                return Get<T>(id, connection);
         }
 
         public T Insert<T>(T newEntity) where T : class, IEntity
@@ -56,17 +49,29 @@ namespace LibraryManager.Api.Repositories.Implementations
                 throw new ArgumentNullException(nameof(entity));
 
             using (var connection = _databaseProvider.GetConnection())
+            {
                 connection.Update(entity);
-            
-            return Get<T>(entity.Id);
+                return Get<T>(entity.Id, connection);
+            }
         }
 
         public void Delete<T>(long id) where T : class, IEntity
         {
-            Get<T>(id);
-
             using (var connection = _databaseProvider.GetConnection())
+            {
+                Get<T>(id, connection);
                 connection.Delete(Get<T>(id));
+            }
+        }
+
+        private static T Get<T>(long id, IDbConnection connection) where T : class, IEntity
+        {
+            var entity = connection.Get<T>(id);
+
+            if (entity == null)
+                throw new EntityNotFoundException(typeof(T).Name, id);
+
+            return entity;
         }
     }
 }
