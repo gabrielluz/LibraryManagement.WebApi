@@ -2,7 +2,7 @@ using LibraryManager.Api.Models;
 using LibraryManager.Api.Models.Entities;
 using System.Collections.Generic;
 
-namespace LibraryManager.Api.Repositories
+namespace LibraryManager.Api.Repositories.Interfaces
 {
     public interface IRentalRepository
     {

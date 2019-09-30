@@ -1,12 +1,14 @@
 using Dapper.Contrib.Extensions;
 using LibraryManager.Api.Exceptions;
 using LibraryManager.Api.Models.Entities;
+using LibraryManager.Api.Repositories.Interfaces;
+using LibraryManager.Api.Repositories.Providers;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
 
-namespace LibraryManager.Api.Repositories
+namespace LibraryManager.Api.Repositories.Implementations
 {
     public class CrudRepository : ICrudRepository
     {

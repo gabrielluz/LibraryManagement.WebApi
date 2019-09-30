@@ -1,6 +1,6 @@
 using System.Data;
 
-namespace LibraryManager.Api.Repositories
+namespace LibraryManager.Api.Repositories.Providers
 {
     public interface IDatabaseProvider
     {

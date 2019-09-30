@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace LibraryManager.Api.Models.Dto
 {
@@ -12,8 +8,9 @@ namespace LibraryManager.Api.Models.Dto
         {
             Limit = paginationFilter.Limit;
             Page = paginationFilter.Page;
-            Items = items;
+            Items = items ?? new T[] { };
         }
+
         public int Limit { get; set; }
         public int Page { get; set; }
         public IEnumerable<T> Items { get; set; }

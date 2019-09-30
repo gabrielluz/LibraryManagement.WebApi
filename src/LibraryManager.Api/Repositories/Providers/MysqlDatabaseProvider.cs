@@ -1,7 +1,7 @@
 using MySql.Data.MySqlClient;
 using System.Data;
 
-namespace LibraryManager.Api.Repositories
+namespace LibraryManager.Api.Repositories.Providers
 {
     public class MysqlDatabaseProvider : IDatabaseProvider
     {

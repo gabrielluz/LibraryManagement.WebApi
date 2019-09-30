@@ -2,11 +2,13 @@ using Dapper;
 using LibraryManager.Api.Exceptions;
 using LibraryManager.Api.Models;
 using LibraryManager.Api.Models.Entities;
+using LibraryManager.Api.Repositories.Interfaces;
+using LibraryManager.Api.Repositories.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LibraryManager.Api.Repositories
+namespace LibraryManager.Api.Repositories.Implementations
 {
     public class RentalRepository : IRentalRepository
     {

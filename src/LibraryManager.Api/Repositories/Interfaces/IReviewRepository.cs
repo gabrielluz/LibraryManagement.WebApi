@@ -1,7 +1,7 @@
 using LibraryManager.Api.Models.Entities;
 using System.Collections.Generic;
 
-namespace LibraryManager.Api.Repositories
+namespace LibraryManager.Api.Repositories.Interfaces
 {
     public interface IReviewRepository
     {

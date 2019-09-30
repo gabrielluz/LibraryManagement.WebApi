@@ -1,7 +1,9 @@
 using AutoMapper;
 using LibraryManager.Api.Exceptions.Handlers;
 using LibraryManager.Api.Filters;
-using LibraryManager.Api.Repositories;
+using LibraryManager.Api.Repositories.Implementations;
+using LibraryManager.Api.Repositories.Interfaces;
+using LibraryManager.Api.Repositories.Providers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
