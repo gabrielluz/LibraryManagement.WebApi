@@ -1,4 +1,5 @@
 using AutoMapper;
+using LibraryManager.Api.Models;
 using LibraryManager.Api.Models.Dto;
 using LibraryManager.Api.Models.Entities;
 using LibraryManager.Api.Repositories.Interfaces;
@@ -12,27 +13,28 @@ namespace LibraryManager.Api.Controllers.v1
     [Route("api/v{version:apiVersion}/users")]
     public class UsersController : ControllerBase
     {
-        private readonly ICrudRepository _crudRepository;
+        private readonly IUsersRepository _booksRepository;
         public readonly IMapper _mapper;
 
-        public UsersController(ICrudRepository crudRepository, IMapper mapper) : base()
+        public UsersController(IUsersRepository usersRepository, IMapper mapper) : base()
         {
-            _crudRepository = crudRepository;
+            _booksRepository = usersRepository;
             _mapper = mapper;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<UserOutputDto>> Get()
+        public ActionResult<PaginatedOutput<UserOutputDto>> Get([FromQuery] Pagination pagination)
         {
-            var users = _crudRepository.GetAll<User>();
+            var users = _booksRepository.GetAllPaginated(pagination ?? new Pagination());
             var usersOutput = _mapper.Map<IEnumerable<UserOutputDto>>(users);
-            return Ok(usersOutput);
+            var paginatedResult = new PaginatedOutput<UserOutputDto>(pagination, usersOutput);
+            return Ok(paginatedResult);
         }
 
         [HttpGet("{id}")]
         public ActionResult<UserOutputDto> Get(long id)
         {
-            var user = _crudRepository.Get<User>(id);
+            var user = _booksRepository.Get(id);
             var userDto = _mapper.Map<UserOutputDto>(user);
             return Ok(userDto);
         }
@@ -41,7 +43,7 @@ namespace LibraryManager.Api.Controllers.v1
         public ActionResult<UserOutputDto> Post([FromBody] UserInputDto userInputDto)
         {
             var userToBeAdded = _mapper.Map<User>(userInputDto);
-            var userAdded = _crudRepository.Insert(userToBeAdded);
+            var userAdded = _booksRepository.Insert(userToBeAdded);
             var userAddedDto = _mapper.Map<UserOutputDto>(userAdded);
             return StatusCode(201, userAddedDto);
         }
@@ -49,8 +51,8 @@ namespace LibraryManager.Api.Controllers.v1
         [HttpPut("{id}")]
         public ActionResult<UserOutputDto> Put(long id, [FromBody] UserInputDto userInputDto)
         {
-            var userToBeUpdated = _crudRepository.Get<User>(id);
-            var userUpdated = _crudRepository.Update(userToBeUpdated);
+            var userToBeUpdated = _booksRepository.Get(id);
+            var userUpdated = _booksRepository.Update(userToBeUpdated);
             var userUpdatedDto = _mapper.Map<UserOutputDto>(userUpdated);
             return Ok(userUpdatedDto);
         }
@@ -58,7 +60,7 @@ namespace LibraryManager.Api.Controllers.v1
         [HttpDelete("{id}")]
         public IActionResult Delete(long id)
         {
-            _crudRepository.Delete<User>(id);
+            _booksRepository.Delete(id);
             return NoContent();
         }
     }

@@ -75,7 +75,7 @@ namespace LibraryManager.Api.Repositories.Implementations
             return rentalList;
         }
 
-        public IEnumerable<Rental> GetAllPaginated(PaginationFilter paginationFilter)
+        public IEnumerable<Rental> GetAllPaginated(Pagination paginationFilter)
         {
             var parameters = new 
             {

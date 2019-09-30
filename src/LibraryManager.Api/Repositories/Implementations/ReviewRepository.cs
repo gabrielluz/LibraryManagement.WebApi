@@ -1,5 +1,6 @@
 using Dapper;
 using LibraryManager.Api.Exceptions;
+using LibraryManager.Api.Models;
 using LibraryManager.Api.Models.Entities;
 using LibraryManager.Api.Repositories.Interfaces;
 using LibraryManager.Api.Repositories.Providers;
@@ -69,17 +70,25 @@ namespace LibraryManager.Api.Repositories.Implementations
             return Get(bookId, review.Id);
         }
 
-        public IEnumerable<Review> GetAll(long bookId)
+        public IEnumerable<Review> GetAllPaginated(long bookId, Pagination paginationFilter)
         {
             _crudRepository.Get<Book>(bookId);
             try
             {
+                var parameters = new
+                {
+                    Limit = paginationFilter.Limit,
+                    OffSet = paginationFilter.CalculateOffSet(),
+                    BookId = bookId
+                };
                 string sql = @"SELECT * 
                             FROM Review r 
                             INNER JOIN User u ON r.UserId = u.Id
                             INNER JOIN Book b ON r.BookId = b.Id
                             WHERE BookId = @BookId
-                            ORDER BY r.Id;";
+                            ORDER BY r.Id
+                            LIMIT @Limit
+                            OFFSET @OffSet;";
 
                 var reviews = _databaseProvider.GetConnection()
                     .Query<Review, User, Book, Review>(
@@ -90,7 +99,7 @@ namespace LibraryManager.Api.Repositories.Implementations
                             review.Book = book;
                             return review;
                         },
-                        new { BookId = bookId });
+                        parameters);
 
                 return reviews;
             }

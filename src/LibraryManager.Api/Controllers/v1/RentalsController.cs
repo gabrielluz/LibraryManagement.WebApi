@@ -25,9 +25,9 @@ namespace LibraryManager.Api.Controllers.v1
         }
 
         [HttpGet]
-        public ActionResult<PaginatedOutput<RentalOutputDto>> Get([FromQuery] PaginationFilter paginationFilter)
+        public ActionResult<PaginatedOutput<RentalOutputDto>> Get([FromQuery] Pagination paginationFilter)
         {
-            var rentalList = _rentalRepository.GetAllPaginated(paginationFilter ?? new PaginationFilter());
+            var rentalList = _rentalRepository.GetAllPaginated(paginationFilter ?? new Pagination());
             var rentalOutputDtoList = _mapper.Map<IEnumerable<RentalOutputDto>>(rentalList);
             var paginatedResult = new PaginatedOutput<RentalOutputDto>(paginationFilter, rentalOutputDtoList);
             return Ok(paginatedResult);

@@ -1,4 +1,5 @@
 using AutoMapper;
+using LibraryManager.Api.Models;
 using LibraryManager.Api.Models.Dto;
 using LibraryManager.Api.Models.Entities;
 using LibraryManager.Api.Repositories.Interfaces;
@@ -23,11 +24,12 @@ namespace LibraryManager.Api.Controllers.v1
 
         [HttpGet]
         [Route("{bookId}/reviews")]
-        public ActionResult<IEnumerable<ReviewOutputDto>> Get(long bookId)
+        public ActionResult<PaginatedOutput<ReviewOutputDto>> Get(long bookId, [FromQuery] Pagination pagination)
         {
-            var reviews = _reviewsRepository.GetAll(bookId);
+            var reviews = _reviewsRepository.GetAllPaginated(bookId, pagination ?? new Pagination());
             var reviewsOutputDto = _mapper.Map<IEnumerable<ReviewOutputDto>>(reviews);
-            return Ok(reviewsOutputDto);
+            var paginatedResult = new PaginatedOutput<ReviewOutputDto>(pagination, reviewsOutputDto);
+            return Ok(paginatedResult);
         }
 
         [HttpGet("{bookId}/reviews/{reviewId}")]

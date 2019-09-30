@@ -2,9 +2,9 @@
 
 namespace LibraryManager.Api.Models
 {
-    public class PaginationFilter
+    public class Pagination
     {
-        public PaginationFilter()
+        public Pagination()
         {
             Page = 1;
             Limit = 20;

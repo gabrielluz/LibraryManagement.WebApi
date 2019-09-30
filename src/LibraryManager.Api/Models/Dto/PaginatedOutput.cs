@@ -4,10 +4,13 @@ namespace LibraryManager.Api.Models.Dto
 {
     public class PaginatedOutput<T> where T : class
     {
-        public PaginatedOutput(PaginationFilter paginationFilter, IEnumerable<T> items)
+        public PaginatedOutput(Pagination paginationFilter, IEnumerable<T> items)
         {
-            Limit = paginationFilter.Limit;
-            Page = paginationFilter.Page;
+            if (paginationFilter == null)
+                paginationFilter = new Pagination();
+
+            Limit = paginationFilter?.Limit ?? 20;
+            Page = paginationFilter?.Page ?? 0;
             Items = items ?? new T[] { };
         }
 

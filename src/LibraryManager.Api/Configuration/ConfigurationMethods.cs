@@ -31,6 +31,8 @@ namespace LibraryManager.Api.Utils
             services.AddScoped<ICrudRepository, CrudRepository>();
             services.AddScoped<IReviewRepository, ReviewRepository>();
             services.AddScoped<IRentalRepository, RentalRepository>();
+            services.AddScoped<IBooksRepository, BooksRepository>();
+            services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddSingleton<ExceptionHandlerAbstractFactory>();
             return services;
         }

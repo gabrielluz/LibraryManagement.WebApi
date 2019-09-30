@@ -8,7 +8,7 @@ namespace LibraryManager.Api.Repositories.Interfaces
     {
         Rental Insert(Rental review);
         Rental Update(Rental review);
-        IEnumerable<Rental> GetAllPaginated(PaginationFilter paginationFilter);
+        IEnumerable<Rental> GetAllPaginated(Pagination paginationFilter);
         IEnumerable<Rental> GetAll();
         Rental Get(long id);
         void Delete(long id);
