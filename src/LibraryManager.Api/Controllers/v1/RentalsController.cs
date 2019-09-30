@@ -5,10 +5,11 @@ using LibraryManager.Api.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
-namespace LibraryManager.Api.Controllers
+namespace LibraryManager.Api.Controllers.v1
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [ApiVersion("1")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class RentalsController : ControllerBase
     {
         private readonly IRentalRepository _rentalRepository;

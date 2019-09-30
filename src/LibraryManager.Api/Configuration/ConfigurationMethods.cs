@@ -35,6 +35,13 @@ namespace LibraryManager.Api.Utils
 
         public static IServiceCollection ConfigureMvc(this IServiceCollection services)
         {
+            services.AddApiVersioning();
+
+            services.AddVersionedApiExplorer(p =>
+            {
+                p.SubstituteApiVersionInUrl = true;
+            });
+
             services.Configure<ApiBehaviorOptions>(config => config.SuppressModelStateInvalidFilter = true);
             services.AddMvc(opt =>
             {
@@ -67,8 +74,7 @@ namespace LibraryManager.Api.Utils
             return services.AddSwaggerDocument(sc =>
             {
                 sc.Title = "Library Management API";
-                sc.DocumentName = "Library Management API Documentation";
-                sc.Version = "1";
+                sc.DocumentName = "v1";
                 sc.Description = "This is a small API I use to learn new things related to ASP.NET Core, "
                     + "web APIs, and some .NET frameworks in general such as Dapper, NSwag, etc.";
             });

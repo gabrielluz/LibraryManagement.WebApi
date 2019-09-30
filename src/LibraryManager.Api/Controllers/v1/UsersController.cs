@@ -5,10 +5,11 @@ using LibraryManager.Api.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
-namespace LibraryManager.Api.Controllers
+namespace LibraryManager.Api.Controllers.v1
 {
     [ApiController]
-    [Route("api/users")]
+    [ApiVersion("1")]
+    [Route("api/v{version:apiVersion}/users")]
     public class UsersController : ControllerBase
     {
         private readonly ICrudRepository _crudRepository;

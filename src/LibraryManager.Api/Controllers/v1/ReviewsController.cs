@@ -5,9 +5,11 @@ using LibraryManager.Api.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
-namespace LibraryManager.Api.Controllers
+namespace LibraryManager.Api.Controllers.v1
 {
-    [Route("/api/books")]
+    [ApiController]
+    [ApiVersion("1")]
+    [Route("/api/v{version:apiVersion}/books")]
     public class ReviewsController : ControllerBase
     {
         private readonly IReviewRepository _reviewsRepository;
