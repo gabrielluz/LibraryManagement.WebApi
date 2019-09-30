@@ -1,4 +1,5 @@
 using Dapper;
+using Dapper.Contrib.Extensions;
 using LibraryManager.Api.Exceptions;
 using LibraryManager.Api.Models;
 using LibraryManager.Api.Models.Entities;
@@ -6,6 +7,7 @@ using LibraryManager.Api.Repositories.Interfaces;
 using LibraryManager.Api.Repositories.Providers;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 
@@ -46,28 +48,32 @@ namespace LibraryManager.Api.Repositories.Implementations
                 BookId = review.Book.Id
             };
 
-            using (var reader = _databaseProvider.GetConnection().ExecuteReader(sqlCommand, sqlParams))
+            using (var connection = _databaseProvider.GetConnection())
             {
+                var reader = connection.ExecuteReader(sqlCommand, sqlParams);
                 if (reader.Read())
                     insertedId = reader.GetInt32(0);
             }
 
-            return Get(review.Book.Id, insertedId);
+            return Get(sqlParams.BookId, insertedId);
         }
 
         public Review Update(long bookId, Review review)
         {
             _crudRepository.Get<Book>(bookId);
-            var sql = "UPDATE Review SET Comment = @Comment, Rate = @Rate WHERE Id = @Id AND BookId = @BookId;";
-            var sqlParameters = new
+            using (var connection = _databaseProvider.GetConnection())
             {
-                review.Comment,
-                review.Rate,
-                review.Id,
-                bookId
-            };
-            _databaseProvider.GetConnection().Execute(sql, sqlParameters);
-            return Get(bookId, review.Id);
+                var sql = "UPDATE Review SET Comment = @Comment, Rate = @Rate WHERE Id = @Id AND BookId = @BookId;";
+                var sqlParameters = new
+                {
+                    review.Comment,
+                    review.Rate,
+                    review.Id,
+                    bookId
+                };
+                connection.Execute(sql, sqlParameters);
+                return Get(review.Id, connection);
+            }
         }
 
         public IEnumerable<Review> GetAllPaginated(long bookId, Pagination paginationFilter)
@@ -111,20 +117,23 @@ namespace LibraryManager.Api.Repositories.Implementations
             _crudRepository.Get<Book>(bookId);
 
             using (var connection = _databaseProvider.GetConnection())
-            {
-                var queryParameter = new { Id = reviewId };
+                return Get(reviewId, connection);
+        }
 
-                var query = @"SELECT *
+        private Review Get(long reviewId, IDbConnection connection)
+        {
+            var queryParameter = new { Id = reviewId };
+
+            var query = @"SELECT *
                         FROM Review r 
                         INNER JOIN User u ON r.UserId = u.Id
                         Where r.Id = @Id;";
 
-                var review = connection
-                    .Query<Review, User, Review>(query, IncludeUser, queryParameter)
-                    .FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Review), reviewId);
+            var review = connection
+                .Query<Review, User, Review>(query, IncludeUser, queryParameter)
+                .FirstOrDefault() ?? throw new EntityNotFoundException(nameof(Review), reviewId);
 
-                return review;
-            }
+            return review;
         }
 
         public void Delete(long bookId, long id)
