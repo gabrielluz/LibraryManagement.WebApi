@@ -1,5 +1,4 @@
 using Dapper;
-using Dapper.Contrib.Extensions;
 using LibraryManager.Api.Exceptions;
 using LibraryManager.Api.Models;
 using LibraryManager.Api.Models.Entities;
@@ -8,7 +7,6 @@ using LibraryManager.Api.Repositories.Providers;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
 
 namespace LibraryManager.Api.Repositories.Implementations
@@ -79,7 +77,7 @@ namespace LibraryManager.Api.Repositories.Implementations
         public IEnumerable<Review> GetAllPaginated(long bookId, Pagination paginationFilter)
         {
             _crudRepository.Get<Book>(bookId);
-            
+
             using (var connection = _databaseProvider.GetConnection())
             {
                 var parameters = new
@@ -88,7 +86,7 @@ namespace LibraryManager.Api.Repositories.Implementations
                     OffSet = paginationFilter.CalculateOffSet(),
                     BookId = bookId
                 };
-                
+
                 string sql = @"SELECT * 
                         FROM Review r 
                         INNER JOIN User u ON r.UserId = u.Id
