@@ -1,5 +1,6 @@
 using Dapper;
 using LibraryManager.Api.Exceptions;
+using LibraryManager.Api.Models;
 using LibraryManager.Api.Models.Entities;
 using System;
 using System.Collections.Generic;
@@ -67,6 +68,28 @@ namespace LibraryManager.Api.Repositories
             var rentalList = _databaseProvider
                 .GetConnection()
                 .Query<Rental, User, Book, Rental>(query, IncludeUserAndBook)
+                .ToList();
+
+            return rentalList;
+        }
+
+        public IEnumerable<Rental> GetAllPaginated(PaginationFilter paginationFilter)
+        {
+            var parameters = new 
+            {
+                Limit = paginationFilter.Limit,
+                OffSet = paginationFilter.CalculateOffSet()
+            };
+            var query = @"SELECT *
+                            FROM Rental r 
+                            INNER JOIN User u ON r.IdUser = u.Id
+                            INNER JOIN Book b ON r.IdBook = b.Id
+                            LIMIT @Limit
+                            OFFSET @OffSet;";
+
+            var rentalList = _databaseProvider
+                .GetConnection()
+                .Query<Rental, User, Book, Rental>(query, IncludeUserAndBook, parameters)
                 .ToList();
 
             return rentalList;

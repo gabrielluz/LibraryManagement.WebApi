@@ -1,4 +1,5 @@
 using AutoMapper;
+using LibraryManager.Api.Models;
 using LibraryManager.Api.Models.Dto;
 using LibraryManager.Api.Models.Entities;
 using LibraryManager.Api.Repositories;

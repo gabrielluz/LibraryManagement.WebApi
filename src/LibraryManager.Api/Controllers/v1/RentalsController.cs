@@ -1,4 +1,5 @@
 using AutoMapper;
+using LibraryManager.Api.Models;
 using LibraryManager.Api.Models.Dto;
 using LibraryManager.Api.Models.Entities;
 using LibraryManager.Api.Repositories;
@@ -24,11 +25,12 @@ namespace LibraryManager.Api.Controllers.v1
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<RentalOutputDto>> Get()
+        public ActionResult<PaginatedOutput<RentalOutputDto>> Get([FromQuery] PaginationFilter paginationFilter)
         {
-            var rentalList = _rentalRepository.GetAll();
+            var rentalList = _rentalRepository.GetAllPaginated(paginationFilter ?? new PaginationFilter());
             var rentalOutputDtoList = _mapper.Map<IEnumerable<RentalOutputDto>>(rentalList);
-            return Ok(rentalOutputDtoList);
+            var paginatedResult = new PaginatedOutput<RentalOutputDto>(paginationFilter, rentalOutputDtoList);
+            return Ok(paginatedResult);
         }
 
         [HttpGet("{id}")]
