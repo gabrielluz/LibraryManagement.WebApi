@@ -1,5 +1,6 @@
 ﻿using LibraryManager.Api.Models;
 using LibraryManager.Api.Models.Entities;
+using LibraryManager.Api.Security;
 using System.Collections.Generic;
 
 namespace LibraryManager.Api.Repositories.Interfaces
@@ -10,7 +11,9 @@ namespace LibraryManager.Api.Repositories.Interfaces
 
         User Get(long id);
 
-        User Insert(User entity);
+        User Authenticate(Credentials credentials);
+
+        void Insert(Credentials credentials);
 
         User Update(User entity);
 

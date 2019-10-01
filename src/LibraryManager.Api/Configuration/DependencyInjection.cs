@@ -1,6 +1,7 @@
 ﻿using LibraryManager.Api.Exceptions.Handlers;
 using LibraryManager.Api.Repositories.Implementations;
 using LibraryManager.Api.Repositories.Interfaces;
+using LibraryManager.Api.Security;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LibraryManager.Api.Configuration
@@ -14,6 +15,7 @@ namespace LibraryManager.Api.Configuration
             services.AddScoped<IRentalRepository, RentalRepository>();
             services.AddScoped<IBooksRepository, BooksRepository>();
             services.AddScoped<IUsersRepository, UsersRepository>();
+            services.AddScoped<ISecurityManager, SecurityManager>();
             services.AddSingleton<ExceptionHandlerAbstractFactory>();
             return services;
         }

@@ -3,6 +3,7 @@ using LibraryManager.Api.Models;
 using LibraryManager.Api.Models.Dto;
 using LibraryManager.Api.Models.Entities;
 using LibraryManager.Api.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Net;
@@ -11,7 +12,8 @@ namespace LibraryManager.Api.Controllers.v1
 {
     [ApiController]
     [ApiVersion("1")]
-    [Route("api/v{version:apiVersion}/books")]
+    [Authorize("Bearer")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class BooksController : ControllerBase
     {
         private readonly IBooksRepository _booksRepository;

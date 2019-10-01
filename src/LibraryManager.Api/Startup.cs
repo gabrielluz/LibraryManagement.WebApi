@@ -20,6 +20,7 @@ namespace LibraryManager.Api
         {
             services.ConfigureDatabase(Configuration);
             services.ConfigureDependencyInjection();
+            services.ConfigureAuthentication();
             services.ConfigureMvc();
             services.ConfigureSwagger();
             services.ConfigureAutoMapper();
@@ -32,6 +33,7 @@ namespace LibraryManager.Api
             app.UseMvc();
             app.UseOpenApi();
             app.UseSwaggerUi3();
+            app.UseAuthentication();
         }
     }
 }
