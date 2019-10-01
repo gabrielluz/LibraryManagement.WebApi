@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using LibraryManager.Api.Configuration;
 using LibraryManager.Api.Models.Dto;
 using LibraryManager.Api.Models.Entities;
-using LibraryManager.Api.Utils;
 using NUnit.Framework;
 using System;
 
