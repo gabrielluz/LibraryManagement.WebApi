@@ -2,7 +2,7 @@ using AutoMapper;
 using LibraryManager.Api.Models.Dto;
 using LibraryManager.Api.Models.Entities;
 
-namespace LibraryManager.Api.Utils
+namespace LibraryManager.Api.Configuration
 {
     public class MappingProfile : Profile
     {
