@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace LibraryManager.Api.Exceptions.Handlers
@@ -15,6 +16,7 @@ namespace LibraryManager.Api.Exceptions.Handlers
         public override Task HandleException(HttpResponse response)
         {
             string json = SerializeErrorMessage(_exception.Message);
+            response.StatusCode = (int)HttpStatusCode.BadRequest;
             return response.WriteAsync(json);
         }
     }
