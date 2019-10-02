@@ -15,6 +15,9 @@ namespace LibraryManager.Api.Configuration
                 .GetSection(nameof(TokenConfiguration))
                 .Get<TokenConfiguration>();
 
+            if (tokenConfiguration == null)
+                throw new ApplicationException($"Can't initialize without configuration section {nameof(TokenConfiguration)}.");
+
             services.AddSingleton(tokenConfiguration);
             services.AddAuthentication(opt =>
             {
