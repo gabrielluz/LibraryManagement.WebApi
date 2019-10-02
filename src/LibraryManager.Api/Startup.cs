@@ -19,8 +19,8 @@ namespace LibraryManager.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.ConfigureDatabase(Configuration);
+            services.ConfigureAuthentication(Configuration);
             services.ConfigureDependencyInjection();
-            services.ConfigureAuthentication();
             services.ConfigureMvc();
             services.ConfigureSwagger();
             services.ConfigureAutoMapper();
