@@ -11,7 +11,8 @@ CREATE TABLE User(
   FirstName VARCHAR(500) NOT NULL,
   LastName VARCHAR(500),
   Description VARCHAR(500),
-  PRIMARY KEY (Id));
+  PRIMARY KEY (Id),
+  UNIQUE KEY (Email));
 
 DROP TABLE IF EXISTS Book;
 

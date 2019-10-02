@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using LibraryManager.Api.Exceptions;
 using LibraryManager.Api.Models;
 using LibraryManager.Api.Models.Entities;
 using LibraryManager.Api.Repositories.Interfaces;
@@ -45,6 +46,20 @@ namespace LibraryManager.Api.Repositories.Implementations
 
         public User Update(User user) => _crudRepository.Update(user);
 
+        private bool EmailHasAlreadyBeenInserted(string email)
+        {
+            if (email == null)
+                throw new ArgumentNullException(nameof(email));
+
+            using (var connection = _databaseProvider.GetConnection())
+            {
+                string sql = "SELECT Id FROM User WHERE Email = @Email;";
+                var parameters = new { Email = email };
+                var userId = connection.QuerySingleOrDefault<long?>(sql, parameters);
+                return userId.HasValue;
+            }
+        }
+
         public User Authenticate(Credentials credentials)
         {
             if (credentials == null)
@@ -67,6 +82,9 @@ namespace LibraryManager.Api.Repositories.Implementations
         {
             if (credentials == null)
                 throw new ArgumentNullException(nameof(credentials));
+
+            if (EmailHasAlreadyBeenInserted(credentials.Email))
+                throw new EntityAlreadyExistsException(nameof(User));
 
             using (var connection = _databaseProvider.GetConnection())
             {

@@ -16,6 +16,9 @@ namespace LibraryManager.Api.Exceptions.Handlers
 
                 case InvalidInputException invalidInputException:
                     return new InvalidInputExceptionHandler(invalidInputException);
+
+                case EntityAlreadyExistsException entityAlreadyExistsException:
+                    return new EntityAlreadyExistsExceptionHandler(entityAlreadyExistsException);
             }
             return new GenericExceptionHandler(exception);
         }
