@@ -67,7 +67,7 @@ namespace LibraryManager.Api.Repositories.Implementations
                     review.Comment,
                     review.Rate,
                     review.Id,
-                    bookId
+                    BookId = bookId
                 };
                 connection.Execute(sql, sqlParameters);
                 return Get(review.Id, connection);
