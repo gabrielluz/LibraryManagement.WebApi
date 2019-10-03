@@ -59,8 +59,8 @@ namespace LibraryManager.Api.Repositories.Implementations
         {
             using (var connection = _databaseProvider.GetConnection())
             {
-                Get<T>(id, connection);
-                connection.Delete(Get<T>(id));
+                var entity = Get<T>(id, connection);
+                connection.Delete(entity);
             }
         }
 

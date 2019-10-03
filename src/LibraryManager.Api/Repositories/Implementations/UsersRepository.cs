@@ -78,7 +78,7 @@ namespace LibraryManager.Api.Repositories.Implementations
             }
         }
 
-        public void Insert(Credentials credentials)
+        public User Insert(Credentials credentials)
         {
             if (credentials == null)
                 throw new ArgumentNullException(nameof(credentials));
@@ -86,16 +86,22 @@ namespace LibraryManager.Api.Repositories.Implementations
             if (EmailHasAlreadyBeenInserted(credentials.Email))
                 throw new EntityAlreadyExistsException(nameof(User));
 
+            int userId = 0;
+
             using (var connection = _databaseProvider.GetConnection())
             {
-                string sql = "INSERT INTO User(Email, SecretKey) VALUES (@Email, @SecretKey);";
+                string sql = "INSERT INTO User(Email, SecretKey) VALUES (@Email, @SecretKey); SELECT LAST_INSERT_ID();";
                 var parameters = new
                 {
                     Email = credentials.Email,
                     SecretKey = credentials.Password
                 };
-                connection.Execute(sql, parameters);
+                
+                var reader = connection.ExecuteReader(sql, parameters);
+                if (reader.Read())
+                    userId = reader.GetInt32(0);
             }
+            return Get(userId);
         }
     }
 }

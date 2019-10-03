@@ -70,6 +70,28 @@ namespace LibraryManager.Tests.Configuration
         }
 
         [Test]
+        public void Map_User_Registered_Output()
+        {
+            //Arrange
+            var sut = _mapperConfiguration.CreateMapper();
+            var user = new User
+            {
+                Id = 1,
+                Description = "Test Description",
+                Email = "Test",
+                FirstName = "Gabriel",
+                LastName = "Luz"
+            };
+
+            //Act
+            var dto = sut.Map<User, UserRegisteredOutputDto>(user);
+
+            //Assert
+            Assert.That(dto.Id, Is.EqualTo(1));
+            Assert.That(dto.Email, Is.EqualTo("Test"));
+        }
+
+        [Test]
         public void Map_Rental_Input()
         {
             //Arrange

@@ -35,6 +35,7 @@ namespace LibraryManager.Api.Configuration
                 .ForPath(e => e.Id, opt => opt.Ignore());
 
             CreateMap<User, UserOutputDto>();
+            CreateMap<User, UserRegisteredOutputDto>();
         }
     }
 }

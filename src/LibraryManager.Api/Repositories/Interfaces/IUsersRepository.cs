@@ -13,7 +13,7 @@ namespace LibraryManager.Api.Repositories.Interfaces
 
         User Authenticate(Credentials credentials);
 
-        void Insert(Credentials credentials);
+        User Insert(Credentials credentials);
 
         User Update(User entity);
 

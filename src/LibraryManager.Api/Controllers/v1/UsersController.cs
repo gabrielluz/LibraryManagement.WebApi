@@ -1,6 +1,7 @@
 using AutoMapper;
 using LibraryManager.Api.Models;
 using LibraryManager.Api.Models.Dto;
+using LibraryManager.Api.Models.Entities;
 using LibraryManager.Api.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -43,7 +44,8 @@ namespace LibraryManager.Api.Controllers.v1
         [HttpPut("{id}")]
         public ActionResult<UserOutputDto> Put(long id, [FromBody] UserInputDto userInputDto)
         {
-            var userToBeUpdated = _usersRepository.Get(id);
+            var userToBeUpdated = _mapper.Map<User>(userInputDto);
+            userToBeUpdated.Id = id;
             var userUpdated = _usersRepository.Update(userToBeUpdated);
             var userUpdatedDto = _mapper.Map<UserOutputDto>(userUpdated);
             return Ok(userUpdatedDto);
