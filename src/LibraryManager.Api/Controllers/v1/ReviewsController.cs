@@ -12,7 +12,7 @@ namespace LibraryManager.Api.Controllers.v1
     [ApiController]
     [ApiVersion("1")]
     [Authorize("Bearer")]
-    [Route("/api/v{version:apiVersion}/[controller]")]
+    [Route("/api/v{version:apiVersion}/books")]
     public class ReviewsController : ControllerBase
     {
         private readonly IReviewRepository _reviewsRepository;
